@@ -8,7 +8,7 @@ type CourtsGridProps = {
 
 function getGridClass(count: number): string {
   if (count <= 1) return 'grid-cols-1'
-  if (count === 2) return 'grid-cols-1 lg:grid-cols-2'
+  if (count === 2) return 'grid-cols-1'
   if (count <= 4) return 'grid-cols-1 md:grid-cols-2'
   if (count <= 6) return 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'
   return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
@@ -31,7 +31,7 @@ export function CourtsGrid({ courts }: CourtsGridProps) {
       )}
     >
       {courts.map((court) => (
-        <CourtCard key={court.id} court={court} />
+        <CourtCard key={court.id} court={court} largeNames={courts.length === 1} />
       ))}
     </div>
   )

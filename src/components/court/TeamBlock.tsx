@@ -7,20 +7,19 @@ type TeamBlockProps = {
   team: Team
   side: TeamSide
   label: string
+  isWinner?: boolean
+  pointsChange?: number
+  largeNames?: boolean
 }
 
-export function TeamBlock({ team, side, label }: TeamBlockProps) {
+export function TeamBlock({ team, side, label, isWinner, pointsChange, largeNames }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
+  const showResult = isWinner || pointsChange !== undefined
 
   return (
-    <div className={cn('relative flex flex-1 flex-col rounded-xl border-2 pt-16 pb-8 px-5', colors.block)}>
-      <div
-        className={cn(
-          'absolute top-5 text-sm',
-          alignRight ? 'right-5 text-right' : 'left-5 text-left',
-        )}
-      >
+    <div className="relative flex flex-1 flex-col gap-2">
+      <div className={cn('relative text-sm', alignRight ? 'text-right' : 'text-left')}>
         <span className={cn('font-semibold uppercase tracking-wide', colors.label)}>
           {label}
         </span>
@@ -29,9 +28,36 @@ export function TeamBlock({ team, side, label }: TeamBlockProps) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-1">
-        <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} />
-        <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} />
+      <div className={cn('relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8', colors.block)}>
+        {showResult && (
+          <div
+            className={cn(
+              'absolute top-1/2 flex -translate-y-1/2 flex-col items-center gap-1',
+              alignRight ? 'left-8' : 'right-8',
+            )}
+          >
+            {isWinner && (
+              <span className="text-5xl leading-none select-none" aria-hidden>
+                🏆
+              </span>
+            )}
+            {pointsChange !== undefined && (
+              <span
+                className={cn(
+                  'text-xl font-semibold tabular-nums leading-none',
+                  isWinner ? colors.label : 'text-muted-foreground',
+                )}
+              >
+                {pointsChange > 0 ? `+${pointsChange}` : pointsChange}
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-1 flex-col justify-center gap-1">
+          <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} large={largeNames} />
+          <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} large={largeNames} />
+        </div>
       </div>
     </div>
   )

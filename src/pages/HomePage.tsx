@@ -14,7 +14,7 @@ export function HomePage() {
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-5">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Badminton Courts
+              Team Bot v2
             </h1>
             <SessionStatusLabel status={status} />
           </div>

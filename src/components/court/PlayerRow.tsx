@@ -4,13 +4,15 @@ import { cn } from '@/lib/utils'
 type PlayerRowProps = {
   player: Player
   align?: 'left' | 'right'
+  large?: boolean
 }
 
-export function PlayerRow({ player, align = 'left' }: PlayerRowProps) {
+export function PlayerRow({ player, align = 'left', large }: PlayerRowProps) {
   return (
     <div
       className={cn(
-        'break-words py-1.5 text-2xl font-semibold leading-tight text-foreground',
+        'break-words py-1.5 font-semibold leading-tight text-foreground',
+        large ? 'text-4xl' : 'text-2xl',
         align === 'right' && 'text-right',
       )}
     >

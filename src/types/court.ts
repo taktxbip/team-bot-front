@@ -1,7 +1,6 @@
 export type Player = {
   id: string
   name: string
-  rank: number
 }
 
 export type Team = {
@@ -19,6 +18,7 @@ export type Court = {
   team1: Team
   team2: Team
   winner?: 'team1' | 'team2'
+  pointsChange?: number
 }
 
 export type CourtsMessage = {
