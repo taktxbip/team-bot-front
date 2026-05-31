@@ -19,11 +19,11 @@ export function CourtCard({ court, largeNames }: CourtCardProps) {
   const team2Won = court.winner === 'team2'
 
   return (
-    <Card className="flex h-full min-h-0 flex-col">
-      <CardHeader className="shrink-0 border-b px-5">
+    <Card className="flex h-full min-h-0 flex-col gap-0">
+      <CardHeader className="shrink-0 px-5 pb-4 pt-4">
         <CardTitle className="text-2xl font-semibold">{court.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-5 px-5 pt-5">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-5 px-5 pt-1">
         <div className="flex min-h-0 flex-1 items-stretch gap-4">
           <TeamBlock
             team={court.team1}

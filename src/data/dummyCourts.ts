@@ -38,40 +38,6 @@ export const dummyCourtsMessage: CourtsMessage = {
         player1: { id: 'p7', name: 'David Lee' },
         player2: { id: 'p8', name: 'Anna Müller' },
       },
-    },
-    {
-      id: 'court-3',
-      name: 'Court 3',
-      team1: {
-        rank: 512,
-        winProbability: 71,
-        player1: { id: 'p9', name: 'Chris Wong' },
-        player2: { id: 'p10', name: 'Priya Sharma' },
-      },
-      team2: {
-        rank: 3487,
-        winProbability: 29,
-        player1: { id: 'p11', name: 'Mike Johnson' },
-        player2: { id: 'p12', name: 'Yuki Tanaka' },
-      },
-    },
-    {
-      id: 'court-4',
-      name: 'Court 4',
-      winner: 'team1',
-      pointsChange: 18,
-      team1: {
-        rank: 128,
-        winProbability: 74,
-        player1: { id: 'p13', name: 'Oliver Brown' },
-        player2: { id: 'p14', name: 'Lucia Rossi' },
-      },
-      team2: {
-        rank: 4521,
-        winProbability: 26,
-        player1: { id: 'p15', name: 'Ryan O\'Connor' },
-        player2: { id: 'p16', name: 'Nina Patel' },
-      },
-    },
+    }
   ],
 }

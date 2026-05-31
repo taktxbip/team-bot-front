@@ -32,7 +32,7 @@ export function TeamBlock({ team, side, label, isWinner, pointsChange, largeName
         {showResult && (
           <div
             className={cn(
-              'absolute top-1/2 flex -translate-y-1/2 flex-col items-center gap-1',
+              'absolute top-1/2 flex -translate-y-1/2 flex-col items-center gap-2',
               alignRight ? 'left-8' : 'right-8',
             )}
           >

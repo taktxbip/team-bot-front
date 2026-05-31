@@ -28,6 +28,7 @@ export function CourtsGrid({ courts }: CourtsGridProps) {
       className={cn(
         'grid h-full w-full flex-1 auto-rows-fr gap-5',
         getGridClass(courts.length),
+        courts.length <= 2 && 'px-8 sm:px-12 md:px-20 lg:px-28',
       )}
     >
       {courts.map((court) => (
