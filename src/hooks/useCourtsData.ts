@@ -1,63 +1,74 @@
 import { useEffect, useState } from 'react'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
-import type { Court, CourtsMessage, SessionStatus } from '@/types/court'
+import {
+  createMatchSocket,
+  getMatchServerUrl,
+  mapMatchResult,
+  type MatchResultBroadcast,
+} from '@/lib/match-ws-client'
+import type { Court, SessionStatus } from '@/types/court'
 
 type UseCourtsDataResult = {
   courts: Court[]
   status: SessionStatus
+  confirmed: boolean
   connected: boolean
   error: string | null
 }
 
-function parseCourtsMessage(data: unknown): CourtsMessage {
-  const message = data as CourtsMessage
-  if (!Array.isArray(message?.courts)) {
-    throw new Error('Invalid courts payload')
-  }
-  if (message.status !== 'live' && message.status !== 'finished') {
-    throw new Error('Invalid session status')
-  }
-  return message
-}
-
-export function useCourtsData(wsUrl = import.meta.env.VITE_WS_URL): UseCourtsDataResult {
+export function useCourtsData(serverUrl = getMatchServerUrl()): UseCourtsDataResult {
   const [courts, setCourts] = useState<Court[]>(dummyCourtsMessage.courts)
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
+  const [confirmed, setConfirmed] = useState(false)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!wsUrl) return
+    const socket = createMatchSocket(serverUrl)
 
-    const socket = new WebSocket(wsUrl)
-
-    socket.onopen = () => {
+    const onConnect = () => {
       setConnected(true)
       setError(null)
     }
 
-    socket.onmessage = (event) => {
-      try {
-        const payload = parseCourtsMessage(JSON.parse(event.data as string) as unknown)
-        setCourts(payload.courts)
-        setStatus(payload.status)
-      } catch {
-        setError('Failed to parse courts data')
-      }
-    }
-
-    socket.onerror = () => {
-      setError('WebSocket connection error')
-    }
-
-    socket.onclose = () => {
+    const onDisconnect = () => {
       setConnected(false)
     }
 
-    return () => {
-      socket.close()
+    const onConnectError = (err: Error) => {
+      setConnected(false)
+      setError(err.message)
     }
-  }, [wsUrl])
 
-  return { courts, status, connected, error }
+    const onMatchResult = (payload: MatchResultBroadcast) => {
+      try {
+        const message = mapMatchResult(payload)
+        setCourts(message.courts)
+        setStatus(message.status)
+        setConfirmed(Boolean(message.confirmed))
+        setError(null)
+      } catch {
+        setError('Failed to parse match result')
+      }
+    }
+
+    socket.on('connect', onConnect)
+    socket.on('disconnect', onDisconnect)
+    socket.on('connect_error', onConnectError)
+    socket.on('match_result', onMatchResult)
+
+    if (!socket.connected) {
+      socket.connect()
+    }
+
+    return () => {
+      socket.off('connect', onConnect)
+      socket.off('disconnect', onDisconnect)
+      socket.off('connect_error', onConnectError)
+      socket.off('match_result', onMatchResult)
+      socket.disconnect()
+    }
+  }, [serverUrl])
+
+  return { courts, status, confirmed, connected, error }
 }

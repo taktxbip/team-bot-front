@@ -8,27 +8,51 @@ type TeamBlockProps = {
   side: TeamSide
   label: string
   isWinner?: boolean
+  highlighted?: boolean
   pointsChange?: number
   largeNames?: boolean
 }
 
-export function TeamBlock({ team, side, label, isWinner, pointsChange, largeNames }: TeamBlockProps) {
+export function TeamBlock({
+  team,
+  side,
+  label,
+  isWinner,
+  highlighted,
+  pointsChange,
+  largeNames,
+}: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
   const showResult = isWinner || pointsChange !== undefined
 
   return (
     <div className="relative flex flex-1 flex-col gap-2">
-      <div className={cn('relative text-sm', alignRight ? 'text-right' : 'text-left')}>
+      <div
+        className={cn(
+          'relative flex text-sm',
+          alignRight ? 'flex-row-reverse justify-start text-right' : 'text-left',
+        )}
+      >
         <span className={cn('font-semibold uppercase tracking-wide', colors.label)}>
           {label}
         </span>
-        <span className="ml-2 tabular-nums text-muted-foreground">
+        <span
+          className={cn(
+            'tabular-nums text-muted-foreground',
+            alignRight ? 'mr-2' : 'ml-2',
+          )}
+        >
           {formatTeamRank(team.rank)}
         </span>
       </div>
 
-      <div className={cn('relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8', colors.block)}>
+      <div
+        className={cn(
+          'relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8',
+          highlighted ? colors.blockFilled : colors.block,
+        )}
+      >
         {showResult && (
           <div
             className={cn(

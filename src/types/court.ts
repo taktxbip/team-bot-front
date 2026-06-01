@@ -1,18 +1,18 @@
-export type Player = {
+type SessionStatus = 'live' | 'finished'
+
+type Player = {
   id: string
   name: string
 }
 
-export type Team = {
+type Team = {
   player1: Player
   player2: Player
   rank: number
   winProbability: number
 }
 
-export type SessionStatus = 'live' | 'finished'
-
-export type Court = {
+type Court = {
   id: string
   name: string
   team1: Team
@@ -21,7 +21,16 @@ export type Court = {
   pointsChange?: number
 }
 
-export type CourtsMessage = {
+type CourtsMessage = {
   status: SessionStatus
+  confirmed?: boolean
   courts: Court[]
+}
+
+export type {
+  Player,
+  Team,
+  SessionStatus,
+  Court,
+  CourtsMessage
 }

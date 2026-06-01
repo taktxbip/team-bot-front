@@ -15,5 +15,6 @@ export function getTeamPointsChange(
   pointsChange?: number,
 ): number | undefined {
   if (!winner || pointsChange === undefined) return undefined
-  return winner === side ? pointsChange : -pointsChange
+  const magnitude = Math.abs(pointsChange)
+  return winner === side ? magnitude : -magnitude
 }

@@ -4,6 +4,7 @@ import { CourtCard } from './CourtCard'
 
 type CourtsGridProps = {
   courts: Court[]
+  confirmed?: boolean
 }
 
 function getGridClass(count: number): string {
@@ -14,7 +15,7 @@ function getGridClass(count: number): string {
   return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
 }
 
-export function CourtsGrid({ courts }: CourtsGridProps) {
+export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
   if (courts.length === 0) {
     return (
       <div className="flex h-full w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground">
@@ -27,12 +28,11 @@ export function CourtsGrid({ courts }: CourtsGridProps) {
     <div
       className={cn(
         'grid h-full w-full flex-1 auto-rows-fr gap-5',
-        getGridClass(courts.length),
-        courts.length <= 2 && 'px-8 sm:px-12 md:px-20 lg:px-28',
+        getGridClass(courts.length)
       )}
     >
       {courts.map((court) => (
-        <CourtCard key={court.id} court={court} largeNames={courts.length === 1} />
+        <CourtCard key={court.id} court={court} confirmed={confirmed} largeNames={courts.length === 1} />
       ))}
     </div>
   )
