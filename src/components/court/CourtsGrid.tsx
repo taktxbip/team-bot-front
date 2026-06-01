@@ -1,6 +1,6 @@
 import type { Court } from '@/types/court'
 import { cn } from '@/lib/utils'
-import { CourtCard } from './CourtCard'
+import { CourtCardEnter } from './CourtCardEnter'
 
 type CourtsGridProps = {
   courts: Court[]
@@ -28,11 +28,17 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
     <div
       className={cn(
         'grid w-full gap-5 md:h-full md:flex-1 md:auto-rows-fr',
-        getGridClass(courts.length)
+        getGridClass(courts.length),
       )}
     >
-      {courts.map((court) => (
-        <CourtCard key={court.id} court={court} confirmed={confirmed} largeNames={courts.length === 1} />
+      {courts.map((court, index) => (
+        <CourtCardEnter
+          key={court.id}
+          court={court}
+          confirmed={confirmed}
+          largeNames={courts.length === 1}
+          staggerIndex={index}
+        />
       ))}
     </div>
   )
