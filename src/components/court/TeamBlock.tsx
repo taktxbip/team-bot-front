@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import type { Team } from '@/types/court'
 import { cn, formatTeamRank } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
+import { fireTeamConfetti } from '@/lib/teamConfetti'
 import { PlayerRow } from './PlayerRow'
 
 type TeamBlockProps = {
@@ -25,6 +27,15 @@ export function TeamBlock({
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
   const showResult = isWinner || pointsChange !== undefined
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const wasWinnerRef = useRef(isWinner)
+
+  useEffect(() => {
+    if (isWinner && !wasWinnerRef.current && canvasRef.current) {
+      fireTeamConfetti(canvasRef.current, side)
+    }
+    wasWinnerRef.current = isWinner
+  }, [isWinner, side])
 
   return (
     <div className="relative flex flex-1 flex-col gap-2">
@@ -49,14 +60,20 @@ export function TeamBlock({
 
       <div
         className={cn(
-          'relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8',
+          'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
           highlighted ? colors.blockFilled : colors.block,
         )}
       >
+        <canvas
+          ref={canvasRef}
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+          aria-hidden
+        />
+
         {showResult && (
           <div
             className={cn(
-              'absolute top-1/2 flex -translate-y-1/2 flex-col items-center gap-2',
+              'absolute top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-2',
               alignRight ? 'left-8' : 'right-8',
             )}
           >
@@ -78,7 +95,7 @@ export function TeamBlock({
           </div>
         )}
 
-        <div className="flex flex-1 flex-col justify-center gap-1">
+        <div className="relative z-10 flex flex-1 flex-col justify-center gap-1">
           <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} large={largeNames} />
           <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} large={largeNames} />
         </div>
