@@ -89,7 +89,7 @@ export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
     confirmed: payload.confirmed,
     courts: payload.courts.map((court) => ({
       id: court.id,
-      name: court.name,
+      name: court.name.startsWith('Court') ? court.name : `Court ${court.name}`,
       winner: court.winner,
       pointsChange: court.pointsChange,
       team1: mapWireTeam(court.team1, 'team1'),
