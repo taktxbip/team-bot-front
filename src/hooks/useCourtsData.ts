@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
+import { MATCH_WS_URL } from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
 import {
   createMatchSocket,
-  getMatchServerUrl,
   mapMatchResult,
   type MatchResultBroadcast,
 } from '@/lib/match-ws-client'
@@ -16,7 +16,7 @@ type UseCourtsDataResult = {
   error: string | null
 }
 
-export function useCourtsData(serverUrl = getMatchServerUrl()): UseCourtsDataResult {
+export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [courts, setCourts] = useState<Court[]>(dummyCourtsMessage.courts)
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
   const [confirmed, setConfirmed] = useState(false)

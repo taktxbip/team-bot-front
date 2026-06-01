@@ -21,12 +21,12 @@ export function CourtCard({ court, confirmed, largeNames }: CourtCardProps) {
   const highlightWinner = Boolean(confirmed)
 
   return (
-    <Card className="flex h-full min-h-0 flex-col gap-0">
+    <Card className="flex flex-col gap-0 md:h-full md:min-h-0">
       <CardHeader className="shrink-0 px-5 pb-4 pt-4">
         <CardTitle className="text-2xl font-semibold">{court.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-5 px-5 pt-1">
-        <div className="flex min-h-0 flex-1 items-stretch gap-4">
+      <CardContent className="flex flex-col gap-5 px-5 pt-1 md:min-h-0 md:flex-1">
+        <div className="flex items-stretch gap-4 md:min-h-0 md:flex-1">
           <TeamBlock
             team={court.team1}
             side="team1"

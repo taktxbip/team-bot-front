@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Team } from '@/types/court'
-import { cn, formatTeamRank } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
 import { fireTeamConfetti } from '@/lib/teamConfetti'
 import { PlayerRow } from './PlayerRow'
@@ -54,7 +54,7 @@ export function TeamBlock({
             alignRight ? 'mr-2' : 'ml-2',
           )}
         >
-          {formatTeamRank(team.rank)}
+          {team.rank}
         </span>
       </div>
 
@@ -74,18 +74,18 @@ export function TeamBlock({
           <div
             className={cn(
               'absolute top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-2',
-              alignRight ? 'left-8' : 'right-8',
+              alignRight ? 'left-3 md:left-8' : 'right-3 md:right-8',
             )}
           >
             {isWinner && (
-              <span className="text-5xl leading-none select-none" aria-hidden>
+              <span className="text-3xl leading-none select-none md:text-5xl" aria-hidden>
                 🏆
               </span>
             )}
             {pointsChange !== undefined && (
               <span
                 className={cn(
-                  'text-xl font-semibold tabular-nums leading-none',
+                  'text-base font-semibold tabular-nums leading-none md:text-xl',
                   isWinner ? colors.label : 'text-muted-foreground',
                 )}
               >

@@ -44,12 +44,6 @@ const defaultOptions = {
   transports: ['websocket', 'polling'] as ('websocket' | 'polling')[],
 }
 
-export const DEFAULT_MATCH_WS_URL = 'http://localhost:5500'
-
-export function getMatchServerUrl(): string {
-  return import.meta.env.VITE_MATCH_WS_URL || DEFAULT_MATCH_WS_URL
-}
-
 export function createMatchSocket(serverUrl: string): Socket {
   return io(serverUrl, defaultOptions)
 }
@@ -88,7 +82,7 @@ export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
 
   console.log(payload);
   console.log('payload');
-  
+
   const status = payload.status ?? 'finished';
   const output = {
     status: payload.confirmed ? 'finished' : status,

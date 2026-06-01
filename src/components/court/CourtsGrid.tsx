@@ -18,7 +18,7 @@ function getGridClass(count: number): string {
 export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
   if (courts.length === 0) {
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground">
+      <div className="flex min-h-48 w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground md:h-full">
         No courts to display
       </div>
     )
@@ -27,7 +27,7 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
   return (
     <div
       className={cn(
-        'grid h-full w-full flex-1 auto-rows-fr gap-5',
+        'grid w-full gap-5 md:h-full md:flex-1 md:auto-rows-fr',
         getGridClass(courts.length)
       )}
     >

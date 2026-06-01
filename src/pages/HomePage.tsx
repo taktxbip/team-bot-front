@@ -8,7 +8,7 @@ export function HomePage() {
   const { courts, status, confirmed, connected, error } = useCourtsData()
 
   return (
-    <div className="flex h-svh w-full flex-col bg-background p-5">
+    <div className="flex min-h-svh w-full flex-col bg-background p-5 md:h-svh md:overflow-hidden">
       <header className="mb-5 shrink-0">
         <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-5">
@@ -34,7 +34,7 @@ export function HomePage() {
         )}
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col">
+      <main className="flex flex-col md:min-h-0 md:flex-1">
         <CourtsGrid courts={courts} confirmed={confirmed} />
       </main>
     </div>
