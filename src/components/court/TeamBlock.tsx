@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { Team } from '@/types/court'
 import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
-import { fireTeamConfetti } from '@/lib/teamConfetti'
+import { fireTeamConfetti, type ConfettiSize } from '@/lib/teamConfetti'
 import { PlayerRow } from './PlayerRow'
 
 type TeamBlockProps = {
@@ -13,7 +13,7 @@ type TeamBlockProps = {
   highlighted?: boolean
   pointsChange?: number
   largeNames?: boolean
-  largeConfetti?: boolean
+  confettiSize?: ConfettiSize
 }
 
 export function TeamBlock({
@@ -24,7 +24,7 @@ export function TeamBlock({
   highlighted,
   pointsChange,
   largeNames,
-  largeConfetti,
+  confettiSize = 'default',
 }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
@@ -34,10 +34,10 @@ export function TeamBlock({
 
   useEffect(() => {
     if (isWinner && !wasWinnerRef.current && canvasRef.current) {
-      fireTeamConfetti(canvasRef.current, side, largeConfetti ? 'large' : 'default')
+      fireTeamConfetti(canvasRef.current, side, confettiSize)
     }
     wasWinnerRef.current = isWinner
-  }, [isWinner, side, largeConfetti])
+  }, [isWinner, side, confettiSize])
 
   return (
     <div className="relative flex flex-1 flex-col gap-2">

@@ -6,7 +6,7 @@ const confettiColors: Record<TeamSide, string[]> = {
   team2: ['#f97316', '#fb923c', '#fdba74', '#fed7aa'],
 }
 
-type ConfettiSize = 'default' | 'large'
+export type ConfettiSize = 'default' | 'large' | 'xlarge'
 
 const confettiPresets: Record<
   ConfettiSize,
@@ -54,6 +54,32 @@ const confettiPresets: Record<
       ticks: 200,
     },
   },
+  xlarge: {
+    burst: {
+      particleCount: 220,
+      spread: 100,
+      startVelocity: 42,
+      gravity: 0.75,
+      scalar: 1.75,
+      origin: { x: 0.5, y: 1 },
+      ticks: 320,
+    },
+    burst2: {
+      particleCount: 120,
+      spread: 125,
+      startVelocity: 36,
+      gravity: 0.7,
+      scalar: 1.9,
+      origin: { x: 0.5, y: 1 },
+      ticks: 280,
+    },
+  },
+}
+
+export function getConfettiSizeForCourtCount(courtCount: number): ConfettiSize {
+  if (courtCount === 1) return 'xlarge'
+  if (courtCount === 2) return 'large'
+  return 'default'
 }
 
 export function fireTeamConfetti(

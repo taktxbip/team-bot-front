@@ -1,5 +1,6 @@
 import { useLayoutEffect, useState } from 'react'
 import type { Court } from '@/types/court'
+import type { ConfettiSize } from '@/lib/teamConfetti'
 import { cn } from '@/lib/utils'
 import { CourtCard } from './CourtCard'
 
@@ -7,7 +8,7 @@ type CourtCardEnterProps = {
   court: Court
   confirmed?: boolean
   largeNames?: boolean
-  largeConfetti?: boolean
+  confettiSize?: ConfettiSize
   staggerIndex: number
 }
 
@@ -15,7 +16,7 @@ export function CourtCardEnter({
   court,
   confirmed,
   largeNames,
-  largeConfetti,
+  confettiSize,
   staggerIndex,
 }: CourtCardEnterProps) {
   const [animate, setAnimate] = useState(false)
@@ -40,7 +41,7 @@ export function CourtCardEnter({
         court={court}
         confirmed={confirmed}
         largeNames={largeNames}
-        largeConfetti={largeConfetti}
+        confettiSize={confettiSize}
       />
     </div>
   )
