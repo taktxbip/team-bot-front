@@ -37,6 +37,7 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
           court={court}
           confirmed={confirmed}
           largeNames={courts.length === 1}
+          largeConfetti={courts.length <= 2}
           staggerIndex={index}
         />
       ))}

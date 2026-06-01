@@ -13,6 +13,7 @@ type TeamBlockProps = {
   highlighted?: boolean
   pointsChange?: number
   largeNames?: boolean
+  largeConfetti?: boolean
 }
 
 export function TeamBlock({
@@ -23,6 +24,7 @@ export function TeamBlock({
   highlighted,
   pointsChange,
   largeNames,
+  largeConfetti,
 }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
@@ -32,10 +34,10 @@ export function TeamBlock({
 
   useEffect(() => {
     if (isWinner && !wasWinnerRef.current && canvasRef.current) {
-      fireTeamConfetti(canvasRef.current, side)
+      fireTeamConfetti(canvasRef.current, side, largeConfetti ? 'large' : 'default')
     }
     wasWinnerRef.current = isWinner
-  }, [isWinner, side])
+  }, [isWinner, side, largeConfetti])
 
   return (
     <div className="relative flex flex-1 flex-col gap-2">

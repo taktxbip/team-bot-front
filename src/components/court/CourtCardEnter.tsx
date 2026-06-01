@@ -7,6 +7,7 @@ type CourtCardEnterProps = {
   court: Court
   confirmed?: boolean
   largeNames?: boolean
+  largeConfetti?: boolean
   staggerIndex: number
 }
 
@@ -14,6 +15,7 @@ export function CourtCardEnter({
   court,
   confirmed,
   largeNames,
+  largeConfetti,
   staggerIndex,
 }: CourtCardEnterProps) {
   const [animate, setAnimate] = useState(false)
@@ -34,7 +36,12 @@ export function CourtCardEnter({
         animate ? { animationDelay: `${Math.min(staggerIndex, 5) * 80}ms` } : undefined
       }
     >
-      <CourtCard court={court} confirmed={confirmed} largeNames={largeNames} />
+      <CourtCard
+        court={court}
+        confirmed={confirmed}
+        largeNames={largeNames}
+        largeConfetti={largeConfetti}
+      />
     </div>
   )
 }

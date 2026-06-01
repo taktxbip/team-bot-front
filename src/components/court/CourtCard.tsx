@@ -13,9 +13,10 @@ type CourtCardProps = {
   court: Court
   confirmed?: boolean
   largeNames?: boolean
+  largeConfetti?: boolean
 }
 
-export function CourtCard({ court, confirmed, largeNames }: CourtCardProps) {
+export function CourtCard({ court, confirmed, largeNames, largeConfetti }: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
   const highlightWinner = Boolean(confirmed)
@@ -35,6 +36,7 @@ export function CourtCard({ court, confirmed, largeNames }: CourtCardProps) {
             highlighted={highlightWinner && team1Won}
             pointsChange={getTeamPointsChange(court.winner, 'team1', court.pointsChange)}
             largeNames={largeNames}
+            largeConfetti={largeConfetti}
           />
           <div className="flex shrink-0 flex-col gap-2">
             <div className="relative text-sm opacity-0" aria-hidden>
@@ -52,6 +54,7 @@ export function CourtCard({ court, confirmed, largeNames }: CourtCardProps) {
             highlighted={highlightWinner && team2Won}
             pointsChange={getTeamPointsChange(court.winner, 'team2', court.pointsChange)}
             largeNames={largeNames}
+            largeConfetti={largeConfetti}
           />
         </div>
         <WinProbabilityBar
