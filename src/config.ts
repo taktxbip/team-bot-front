@@ -1,5 +1,5 @@
 /** Socket.IO host (no protocol). Server must expose HTTPS/WSS when the app is served over HTTPS. */
-const MATCH_WS_HOST = '35.75.61.91:5500'
+const MATCH_WS_HOST = 'bad-teams.duckdns.org'
 
 function resolveMatchWsUrl(): string {
   const useSecure =
