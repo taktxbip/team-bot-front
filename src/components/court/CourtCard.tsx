@@ -1,4 +1,5 @@
 import type { Court } from '@/types/court'
+import type { PlayerNameSize } from '@/components/court/PlayerRow'
 import type { ConfettiSize } from '@/lib/teamConfetti'
 import { getTeamPointsChange } from '@/lib/utils'
 import {
@@ -13,11 +14,11 @@ import { WinProbabilityBar } from './WinProbabilityBar'
 type CourtCardProps = {
   court: Court
   confirmed?: boolean
-  largeNames?: boolean
+  nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
 }
 
-export function CourtCard({ court, confirmed, largeNames, confettiSize }: CourtCardProps) {
+export function CourtCard({ court, confirmed, nameSize, confettiSize }: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
   const highlightWinner = Boolean(confirmed)
@@ -36,7 +37,7 @@ export function CourtCard({ court, confirmed, largeNames, confettiSize }: CourtC
             isWinner={team1Won}
             highlighted={highlightWinner && team1Won}
             pointsChange={getTeamPointsChange(court.winner, 'team1', court.pointsChange)}
-            largeNames={largeNames}
+            nameSize={nameSize}
             confettiSize={confettiSize}
           />
           <div className="flex shrink-0 flex-col gap-2">
@@ -54,7 +55,7 @@ export function CourtCard({ court, confirmed, largeNames, confettiSize }: CourtC
             isWinner={team2Won}
             highlighted={highlightWinner && team2Won}
             pointsChange={getTeamPointsChange(court.winner, 'team2', court.pointsChange)}
-            largeNames={largeNames}
+            nameSize={nameSize}
             confettiSize={confettiSize}
           />
         </div>

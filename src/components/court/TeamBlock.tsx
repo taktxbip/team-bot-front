@@ -3,7 +3,7 @@ import type { Team } from '@/types/court'
 import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
 import { fireTeamConfetti, type ConfettiSize } from '@/lib/teamConfetti'
-import { PlayerRow } from './PlayerRow'
+import { PlayerRow, type PlayerNameSize } from './PlayerRow'
 
 type TeamBlockProps = {
   team: Team
@@ -12,7 +12,7 @@ type TeamBlockProps = {
   isWinner?: boolean
   highlighted?: boolean
   pointsChange?: number
-  largeNames?: boolean
+  nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
 }
 
@@ -23,7 +23,7 @@ export function TeamBlock({
   isWinner,
   highlighted,
   pointsChange,
-  largeNames,
+  nameSize = 'default',
   confettiSize = 'default',
 }: TeamBlockProps) {
   const colors = teamStyles[side]
@@ -98,8 +98,8 @@ export function TeamBlock({
         )}
 
         <div className="relative z-10 flex flex-1 flex-col justify-center gap-1">
-          <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} large={largeNames} />
-          <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} large={largeNames} />
+          <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} size={nameSize} />
+          <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} size={nameSize} />
         </div>
       </div>
     </div>

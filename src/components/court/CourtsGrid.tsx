@@ -1,5 +1,6 @@
 import type { Court } from '@/types/court'
 import { getConfettiSizeForCourtCount } from '@/lib/teamConfetti'
+import { getNameSizeForCourtCount } from '@/lib/playerNameSize'
 import { cn } from '@/lib/utils'
 import { CourtCardEnter } from './CourtCardEnter'
 
@@ -26,6 +27,7 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
   }
 
   const confettiSize = getConfettiSizeForCourtCount(courts.length)
+  const nameSize = getNameSizeForCourtCount(courts.length)
 
   return (
     <div
@@ -39,7 +41,7 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
           key={court.id}
           court={court}
           confirmed={confirmed}
-          largeNames={courts.length === 1}
+          nameSize={nameSize}
           confettiSize={confettiSize}
           staggerIndex={index}
         />
