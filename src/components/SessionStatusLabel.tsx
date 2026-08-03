@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { SessionStatus } from '@/types/court'
 import { cn } from '@/lib/utils'
 
@@ -12,15 +13,17 @@ type SessionStatusLabelProps = {
 
 export function SessionStatusLabel({ status }: SessionStatusLabelProps) {
   return (
-    <span
+    <Link
+      to="/play"
+      aria-label="Play"
       className={cn(
-        'rounded-xl px-6 py-2 text-3xl font-semibold uppercase tracking-wide',
+        'inline-flex rounded-xl px-6 py-2 text-3xl font-semibold uppercase tracking-wide',
         status === 'live'
           ? 'bg-emerald-500 text-emerald-700 dark:text-emerald-400'
           : 'bg-white text-foreground dark:bg-secondary dark:text-secondary-foreground',
       )}
     >
       {statusLabels[status]}
-    </span>
+    </Link>
   )
 }
