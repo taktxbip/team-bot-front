@@ -7,6 +7,8 @@ import { CourtCardEnter } from './CourtCardEnter'
 type CourtsGridProps = {
   courts: Court[]
   confirmed?: boolean
+  onSelectWinner?: (winnerKey: string) => void
+  canSelectWinner?: boolean
 }
 
 function getGridClass(count: number): string {
@@ -17,7 +19,12 @@ function getGridClass(count: number): string {
   return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
 }
 
-export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
+export function CourtsGrid({
+  courts,
+  confirmed,
+  onSelectWinner,
+  canSelectWinner,
+}: CourtsGridProps) {
   if (courts.length === 0) {
     return (
       <div className="flex min-h-48 w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground md:h-full">
@@ -44,6 +51,8 @@ export function CourtsGrid({ courts, confirmed }: CourtsGridProps) {
           nameSize={nameSize}
           confettiSize={confettiSize}
           staggerIndex={index}
+          onSelectWinner={onSelectWinner}
+          canSelectWinner={canSelectWinner}
         />
       ))}
     </div>

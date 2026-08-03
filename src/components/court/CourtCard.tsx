@@ -1,7 +1,7 @@
 import type { Court } from '@/types/court'
 import type { PlayerNameSize } from '@/components/court/PlayerRow'
 import type { ConfettiSize } from '@/lib/teamConfetti'
-import { getTeamPointsChange } from '@/lib/utils'
+import { getTeamPointsChange, getTeamWinnerKey } from '@/lib/utils'
 import {
   Card,
   CardContent,
@@ -16,12 +16,22 @@ type CourtCardProps = {
   confirmed?: boolean
   nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
+  onSelectWinner?: (winnerKey: string) => void
+  canSelectWinner?: boolean
 }
 
-export function CourtCard({ court, confirmed, nameSize, confettiSize }: CourtCardProps) {
+export function CourtCard({
+  court,
+  confirmed,
+  nameSize,
+  confettiSize,
+  onSelectWinner,
+  canSelectWinner = false,
+}: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
   const highlightWinner = Boolean(confirmed)
+  const selectable = canSelectWinner && Boolean(onSelectWinner)
 
   return (
     <Card className="flex flex-col gap-0 md:h-full md:min-h-0">
@@ -39,6 +49,8 @@ export function CourtCard({ court, confirmed, nameSize, confettiSize }: CourtCar
             pointsChange={getTeamPointsChange(court.winner, 'team1', court.pointsChange)}
             nameSize={nameSize}
             confettiSize={confettiSize}
+            selectable={selectable}
+            onSelect={() => onSelectWinner?.(getTeamWinnerKey(court.team1))}
           />
           <div className="flex shrink-0 flex-col gap-2">
             <div className="relative text-sm opacity-0" aria-hidden>
@@ -57,6 +69,8 @@ export function CourtCard({ court, confirmed, nameSize, confettiSize }: CourtCar
             pointsChange={getTeamPointsChange(court.winner, 'team2', court.pointsChange)}
             nameSize={nameSize}
             confettiSize={confettiSize}
+            selectable={selectable}
+            onSelect={() => onSelectWinner?.(getTeamWinnerKey(court.team2))}
           />
         </div>
         <WinProbabilityBar

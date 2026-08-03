@@ -6,6 +6,7 @@ type Player = {
 }
 
 type Team = {
+  key?: string
   player1: Player
   player2: Player
   rank: number

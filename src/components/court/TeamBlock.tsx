@@ -14,6 +14,8 @@ type TeamBlockProps = {
   pointsChange?: number
   nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
+  onSelect?: () => void
+  selectable?: boolean
 }
 
 export function TeamBlock({
@@ -25,6 +27,8 @@ export function TeamBlock({
   pointsChange,
   nameSize = 'default',
   confettiSize = 'default',
+  onSelect,
+  selectable = false,
 }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
@@ -61,9 +65,24 @@ export function TeamBlock({
       </div>
 
       <div
+        role={selectable ? 'button' : undefined}
+        tabIndex={selectable ? 0 : undefined}
+        aria-label={selectable ? `Select ${label} as winner` : undefined}
+        onClick={selectable ? onSelect : undefined}
+        onKeyDown={
+          selectable
+            ? (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  onSelect?.()
+                }
+              }
+            : undefined
+        }
         className={cn(
           'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
           highlighted ? colors.blockFilled : colors.block,
+          selectable && 'cursor-pointer transition-opacity hover:opacity-90',
         )}
       >
         <canvas

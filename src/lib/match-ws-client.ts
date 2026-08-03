@@ -48,6 +48,12 @@ export function createMatchSocket(serverUrl: string): Socket {
   return io(serverUrl, defaultOptions)
 }
 
+export const SET_WINNER_EVENT = 'winner'
+
+export function emitWinner(socket: Socket, winnerKey: string) {
+  socket.emit(SET_WINNER_EVENT, winnerKey)
+}
+
 function mapWirePlayer(
   player: WirePlayer | undefined,
   fallbackName: string,
@@ -63,6 +69,7 @@ function mapWireTeam(team: WireTeam, side: 'team1' | 'team2') {
   const idPrefix = team.key || side
 
   return {
+    key: team.key,
     rank: team.rank ?? 0,
     winProbability: team.winProbability ?? 50,
     player1: mapWirePlayer(

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { Socket } from 'socket.io-client'
 import { MATCH_WS_URL } from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
 import {
   createMatchSocket,
+  emitWinner,
   mapMatchResult,
   type MatchResultBroadcast,
 } from '@/lib/match-ws-client'
@@ -14,6 +16,7 @@ type UseCourtsDataResult = {
   confirmed: boolean
   connected: boolean
   error: string | null
+  selectWinner: (winnerKey: string) => void
 }
 
 export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
@@ -22,9 +25,11 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [confirmed, setConfirmed] = useState(false)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const socketRef = useRef<Socket | null>(null)
 
   useEffect(() => {
     const socket = createMatchSocket(serverUrl)
+    socketRef.current = socket
 
     const onConnect = () => {
       setConnected(true)
@@ -67,8 +72,15 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('connect_error', onConnectError)
       socket.off('match_result', onMatchResult)
       socket.disconnect()
+      socketRef.current = null
     }
   }, [serverUrl])
 
-  return { courts, status, confirmed, connected, error }
+  const selectWinner = useCallback((winnerKey: string) => {
+    const socket = socketRef.current
+    if (!socket?.connected) return
+    emitWinner(socket, winnerKey)
+  }, [])
+
+  return { courts, status, confirmed, connected, error, selectWinner }
 }
