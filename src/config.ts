@@ -1,5 +1,5 @@
 /** Socket.IO host (no protocol). Server must expose HTTPS/WSS when the app is served over HTTPS. */
-const MATCH_WS_HOST = 'bbbplay.top'
+const MATCH_WS_HOST = 'api.bbbplay.top'
 // const MATCH_WS_HOST = 'localhost:5500'
 
 function resolveMatchWsUrl(): string {
@@ -15,4 +15,4 @@ function resolveMatchWsUrl(): string {
 export const MATCH_WS_URL = resolveMatchWsUrl()
 
 /** Rankings REST API */
-export const RANKINGS_API_URL = 'https://bbbplay.top/rankings'
+export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
