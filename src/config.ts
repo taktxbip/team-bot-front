@@ -13,3 +13,6 @@ function resolveMatchWsUrl(): string {
 
 /** Socket.IO server for live match results */
 export const MATCH_WS_URL = resolveMatchWsUrl()
+
+/** Rankings REST API */
+export const RANKINGS_API_URL = 'https://bbbplay.top/rankings'
