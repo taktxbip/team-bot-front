@@ -25,12 +25,12 @@ export function RankingsTable({ rankings }: RankingsTableProps) {
               className="border-b border-border/60 last:border-b-0"
             >
               <td className="px-5 py-3">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">{index + 1}.</span>
+                  <span className="font-semibold text-foreground">{entry.name}</span>
                   <span className="w-6 shrink-0 text-center text-xl leading-none" aria-hidden>
                     {entry.flag}
                   </span>
-                  <span className="font-semibold text-foreground">{entry.name}</span>
                 </div>
               </td>
               <td className="px-5 py-3 text-right tabular-nums font-semibold text-foreground">
