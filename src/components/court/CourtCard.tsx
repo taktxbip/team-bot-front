@@ -18,6 +18,7 @@ type CourtCardProps = {
   confettiSize?: ConfettiSize
   onSelectWinner?: (winnerKey: string) => void
   canSelectWinner?: boolean
+  pendingWinnerKey?: string | null
 }
 
 export function CourtCard({
@@ -27,11 +28,14 @@ export function CourtCard({
   confettiSize,
   onSelectWinner,
   canSelectWinner = false,
+  pendingWinnerKey = null,
 }: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
   const highlightWinner = Boolean(confirmed)
-  const selectable = canSelectWinner && Boolean(onSelectWinner)
+  const selectable = canSelectWinner && Boolean(onSelectWinner) && !pendingWinnerKey
+  const team1Key = getTeamWinnerKey(court.team1)
+  const team2Key = getTeamWinnerKey(court.team2)
 
   return (
     <Card className="flex flex-col gap-0 md:h-full md:min-h-0">
@@ -50,7 +54,8 @@ export function CourtCard({
             nameSize={nameSize}
             confettiSize={confettiSize}
             selectable={selectable}
-            onSelect={() => onSelectWinner?.(getTeamWinnerKey(court.team1))}
+            loading={pendingWinnerKey === team1Key}
+            onSelect={() => onSelectWinner?.(team1Key)}
           />
           <div className="flex shrink-0 flex-col gap-2">
             <div className="relative text-sm opacity-0" aria-hidden>
@@ -70,7 +75,8 @@ export function CourtCard({
             nameSize={nameSize}
             confettiSize={confettiSize}
             selectable={selectable}
-            onSelect={() => onSelectWinner?.(getTeamWinnerKey(court.team2))}
+            loading={pendingWinnerKey === team2Key}
+            onSelect={() => onSelectWinner?.(team2Key)}
           />
         </div>
         <WinProbabilityBar

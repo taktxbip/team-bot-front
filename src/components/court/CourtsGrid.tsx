@@ -9,6 +9,7 @@ type CourtsGridProps = {
   confirmed?: boolean
   onSelectWinner?: (winnerKey: string) => void
   canSelectWinner?: boolean
+  pendingWinnerKey?: string | null
 }
 
 function getGridClass(count: number): string {
@@ -24,6 +25,7 @@ export function CourtsGrid({
   confirmed,
   onSelectWinner,
   canSelectWinner,
+  pendingWinnerKey,
 }: CourtsGridProps) {
   if (courts.length === 0) {
     return (
@@ -53,6 +55,7 @@ export function CourtsGrid({
           staggerIndex={index}
           onSelectWinner={onSelectWinner}
           canSelectWinner={canSelectWinner}
+          pendingWinnerKey={pendingWinnerKey}
         />
       ))}
     </div>

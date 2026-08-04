@@ -3,6 +3,7 @@ import type { Team } from '@/types/court'
 import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
 import { fireTeamConfetti, type ConfettiSize } from '@/lib/teamConfetti'
+import { SIMPSON_LOADER_SRC, useSimpsonLoaderReady } from '@/lib/simpsonLoader'
 import { PlayerRow, type PlayerNameSize } from './PlayerRow'
 
 type TeamBlockProps = {
@@ -16,6 +17,7 @@ type TeamBlockProps = {
   confettiSize?: ConfettiSize
   onSelect?: () => void
   selectable?: boolean
+  loading?: boolean
 }
 
 export function TeamBlock({
@@ -29,12 +31,15 @@ export function TeamBlock({
   confettiSize = 'default',
   onSelect,
   selectable = false,
+  loading = false,
 }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
   const showResult = isWinner || pointsChange !== undefined
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wasWinnerRef = useRef(isWinner)
+  const loaderReady = useSimpsonLoaderReady()
+  const showLoader = loading && loaderReady
 
   useEffect(() => {
     if (isWinner && !wasWinnerRef.current && canvasRef.current) {
@@ -68,9 +73,10 @@ export function TeamBlock({
         role={selectable ? 'button' : undefined}
         tabIndex={selectable ? 0 : undefined}
         aria-label={selectable ? `Select ${label} as winner` : undefined}
-        onClick={selectable ? onSelect : undefined}
+        aria-busy={loading || undefined}
+        onClick={selectable && !loading ? onSelect : undefined}
         onKeyDown={
-          selectable
+          selectable && !loading
             ? (event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault()
@@ -82,7 +88,8 @@ export function TeamBlock({
         className={cn(
           'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
           highlighted ? colors.blockFilled : colors.block,
-          selectable && 'cursor-pointer transition-opacity hover:opacity-90',
+          selectable && !loading && 'cursor-pointer transition-opacity hover:opacity-90',
+          loading && 'pointer-events-none',
         )}
       >
         <canvas
@@ -91,6 +98,15 @@ export function TeamBlock({
           aria-hidden
         />
 
+        {showLoader && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60">
+            <img
+              src={SIMPSON_LOADER_SRC}
+              alt=""
+              className="max-h-[70%] max-w-[70%] object-contain"
+            />
+          </div>
+        )}
         {showResult && (
           <div
             className={cn(

@@ -4,6 +4,9 @@ import { ConnectionStatus } from '@/components/ConnectionStatus'
 import { SessionStatusLabel } from '@/components/SessionStatusLabel'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { MatchDataProvider, useMatchData } from '@/hooks/MatchDataContext'
+import { preloadSimpsonLoader } from '@/lib/simpsonLoader'
+
+void preloadSimpsonLoader()
 
 function AppHeader() {
   const { status } = useMatchData()

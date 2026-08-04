@@ -2,7 +2,7 @@ import { CourtsGrid } from '@/components/court/CourtsGrid'
 import { useMatchData } from '@/hooks/MatchDataContext'
 
 export function PlayPage() {
-  const { courts, confirmed, connected, error, selectWinner } = useMatchData()
+  const { courts, confirmed, connected, error, pendingWinnerKey, selectWinner } = useMatchData()
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -18,6 +18,7 @@ export function PlayPage() {
           confirmed={confirmed}
           onSelectWinner={selectWinner}
           canSelectWinner={connected && !confirmed}
+          pendingWinnerKey={pendingWinnerKey}
         />
       </main>
     </div>

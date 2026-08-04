@@ -13,6 +13,7 @@ type CourtCardEnterProps = {
   staggerIndex: number
   onSelectWinner?: (winnerKey: string) => void
   canSelectWinner?: boolean
+  pendingWinnerKey?: string | null
 }
 
 export function CourtCardEnter({
@@ -23,6 +24,7 @@ export function CourtCardEnter({
   staggerIndex,
   onSelectWinner,
   canSelectWinner,
+  pendingWinnerKey,
 }: CourtCardEnterProps) {
   const [animate, setAnimate] = useState(false)
 
@@ -49,6 +51,7 @@ export function CourtCardEnter({
         confettiSize={confettiSize}
         onSelectWinner={onSelectWinner}
         canSelectWinner={canSelectWinner}
+        pendingWinnerKey={pendingWinnerKey}
       />
     </div>
   )

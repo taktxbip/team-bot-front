@@ -16,6 +16,7 @@ type UseCourtsDataResult = {
   confirmed: boolean
   connected: boolean
   error: string | null
+  pendingWinnerKey: string | null
   selectWinner: (winnerKey: string) => void
 }
 
@@ -25,7 +26,17 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [confirmed, setConfirmed] = useState(false)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const socketRef = useRef<Socket | null>(null)
+  const pendingClearTimerRef = useRef<number | null>(null)
+
+  const clearPendingWinner = useCallback(() => {
+    if (pendingClearTimerRef.current !== null) {
+      window.clearTimeout(pendingClearTimerRef.current)
+      pendingClearTimerRef.current = null
+    }
+    setPendingWinnerKey(null)
+  }, [])
 
   useEffect(() => {
     const socket = createMatchSocket(serverUrl)
@@ -73,14 +84,31 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('match_result', onMatchResult)
       socket.disconnect()
       socketRef.current = null
+      if (pendingClearTimerRef.current !== null) {
+        window.clearTimeout(pendingClearTimerRef.current)
+      }
     }
   }, [serverUrl])
 
-  const selectWinner = useCallback((winnerKey: string) => {
-    const socket = socketRef.current
-    if (!socket?.connected) return
-    emitWinner(socket, winnerKey)
-  }, [])
+  const selectWinner = useCallback(
+    (winnerKey: string) => {
+      const socket = socketRef.current
+      if (!socket?.connected) return
 
-  return { courts, status, confirmed, connected, error, selectWinner }
+      if (pendingClearTimerRef.current !== null) {
+        window.clearTimeout(pendingClearTimerRef.current)
+      }
+
+      setPendingWinnerKey(winnerKey)
+      emitWinner(socket, winnerKey)
+
+      // Temporary delay so the loader stays visible for testing
+      // pendingClearTimerRef.current = window.setTimeout(() => {
+      clearPendingWinner()
+      // }, 3000)
+    },
+    [clearPendingWinner],
+  )
+
+  return { courts, status, confirmed, connected, error, pendingWinnerKey, selectWinner }
 }
