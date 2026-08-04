@@ -39,7 +39,7 @@ export function TeamBlock({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wasWinnerRef = useRef(isWinner)
   const loaderReady = useSimpsonLoaderReady()
-  const showLoader = loading && loaderReady
+  const showLoader = Boolean(loading)
 
   useEffect(() => {
     if (isWinner && !wasWinnerRef.current && canvasRef.current) {
@@ -99,11 +99,14 @@ export function TeamBlock({
         />
 
         {showLoader && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/70">
             <img
               src={SIMPSON_LOADER_SRC}
-              alt=""
-              className="max-h-[70%] max-w-[70%] object-contain"
+              alt="Loading"
+              className={cn(
+                'max-h-[70%] max-w-[70%] object-contain',
+                !loaderReady && 'opacity-0',
+              )}
             />
           </div>
         )}
