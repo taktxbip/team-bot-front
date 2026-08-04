@@ -30,7 +30,7 @@ export function CourtsGrid({
   if (courts.length === 0) {
     return (
       <div className="flex min-h-48 w-full items-center justify-center rounded-xl border border-dashed text-muted-foreground md:h-full">
-        No courts to display
+        No teams
       </div>
     )
   }
