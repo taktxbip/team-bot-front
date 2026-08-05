@@ -3,5 +3,6 @@ export type RankingEntry = {
   elo: number
   flag: string
   change: number
+  changeElo: number
 }
 

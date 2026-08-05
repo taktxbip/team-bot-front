@@ -39,6 +39,7 @@ export function useRankings(url = RANKINGS_API_URL): UseRankingsResult {
               elo: typeof item.elo === 'number' ? item.elo : 0,
               flag: item.flag ?? '',
               change: typeof item.change === 'number' ? Math.trunc(item.change) : 0,
+              changeElo: typeof item.changeElo === 'number' ? item.changeElo : 0,
             }
           }),
         )
