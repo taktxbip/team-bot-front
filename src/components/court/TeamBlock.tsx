@@ -135,7 +135,12 @@ export function TeamBlock({
           </div>
         )}
 
-        <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1">
+        <div
+          className={cn(
+            'relative z-10 flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1',
+            alignRight ? 'pl-10 pr-2 md:pl-14 md:pr-4' : 'pr-10 pl-2 md:pr-14 md:pl-4',
+          )}
+        >
           <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} size={nameSize} />
           <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} size={nameSize} />
         </div>
