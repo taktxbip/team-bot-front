@@ -3,10 +3,21 @@ import { cn } from '@/lib/utils'
 
 export type PlayerNameSize = 'default' | 'medium' | 'large'
 
+/**
+ * Fluid type: scales with the team card (@container), not fixed rem.
+ * - cqi ≈ card width, cqb ≈ card height
+ * - clamp floor keeps mobile readable; cap prevents huge type on big iPads
+ */
 const nameSizeClasses: Record<PlayerNameSize, string> = {
-  default: 'text-[18px] md:text-2xl',
-  medium: 'text-[18px] md:text-4xl md:leading-tight',
-  large: 'text-[18px] md:text-6xl md:leading-[1.05]',
+  // 3+ courts (grid cells are smaller)
+  default:
+    'text-[18px] leading-tight md:text-[clamp(1.125rem,min(8cqi,6.5cqb),1.5rem)] md:leading-tight',
+  // 2 courts stacked
+  medium:
+    'text-[18px] leading-tight md:text-[clamp(1.25rem,min(10cqi,7.5cqb),2.25rem)] md:leading-tight',
+  // 1 court — biggest, but shrinks on narrower tablets
+  large:
+    'text-[18px] leading-tight md:text-[clamp(1.35rem,min(12cqi,9cqb),3.5rem)] md:leading-[1.1]',
 }
 
 type PlayerRowProps = {
@@ -19,7 +30,7 @@ export function PlayerRow({ player, align = 'left', size = 'default' }: PlayerRo
   return (
     <div
       className={cn(
-        'break-words py-1.5 font-semibold leading-tight text-foreground',
+        'min-w-0 break-words py-1 font-semibold text-foreground',
         nameSizeClasses[size],
         align === 'right' && 'text-right',
       )}

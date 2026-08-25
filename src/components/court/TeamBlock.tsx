@@ -49,7 +49,7 @@ export function TeamBlock({
   }, [isWinner, side, confettiSize])
 
   return (
-    <div className="relative flex flex-1 flex-col gap-2">
+    <div className="relative flex min-w-0 flex-1 flex-col gap-2">
       <div
         className={cn(
           'relative flex text-sm',
@@ -86,7 +86,7 @@ export function TeamBlock({
             : undefined
         }
         className={cn(
-          'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
+          '@container relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
           highlighted ? colors.blockFilled : colors.block,
           selectable && !loading && 'cursor-pointer transition-opacity hover:opacity-90',
           loading && 'pointer-events-none',
@@ -135,7 +135,7 @@ export function TeamBlock({
           </div>
         )}
 
-        <div className="relative z-10 flex flex-1 flex-col justify-center gap-1">
+        <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1">
           <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} size={nameSize} />
           <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} size={nameSize} />
         </div>
