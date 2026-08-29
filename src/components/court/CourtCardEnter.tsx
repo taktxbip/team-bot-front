@@ -1,6 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
 import type { Court } from '@/types/court'
-import type { PlayerNameSize } from '@/components/court/PlayerRow'
 import type { ConfettiSize } from '@/lib/teamConfetti'
 import { cn } from '@/lib/utils'
 import { CourtCard } from './CourtCard'
@@ -8,7 +7,6 @@ import { CourtCard } from './CourtCard'
 type CourtCardEnterProps = {
   court: Court
   confirmed?: boolean
-  nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
   staggerIndex: number
   onSelectWinner?: (winnerKey: string) => void
@@ -19,7 +17,6 @@ type CourtCardEnterProps = {
 export function CourtCardEnter({
   court,
   confirmed,
-  nameSize,
   confettiSize,
   staggerIndex,
   onSelectWinner,
@@ -47,7 +44,6 @@ export function CourtCardEnter({
       <CourtCard
         court={court}
         confirmed={confirmed}
-        nameSize={nameSize}
         confettiSize={confettiSize}
         onSelectWinner={onSelectWinner}
         canSelectWinner={canSelectWinner}

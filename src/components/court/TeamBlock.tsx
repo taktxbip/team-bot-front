@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
 import { fireTeamConfetti, type ConfettiSize } from '@/lib/teamConfetti'
 import { SIMPSON_LOADER_SRC, useSimpsonLoaderReady } from '@/lib/simpsonLoader'
-import { PlayerRow, type PlayerNameSize } from './PlayerRow'
+import { PlayerRow } from './PlayerRow'
 
 type TeamBlockProps = {
   team: Team
@@ -13,7 +13,6 @@ type TeamBlockProps = {
   isWinner?: boolean
   highlighted?: boolean
   pointsChange?: number
-  nameSize?: PlayerNameSize
   confettiSize?: ConfettiSize
   onSelect?: () => void
   selectable?: boolean
@@ -27,7 +26,6 @@ export function TeamBlock({
   isWinner,
   highlighted,
   pointsChange,
-  nameSize = 'default',
   confettiSize = 'default',
   onSelect,
   selectable = false,
@@ -86,7 +84,7 @@ export function TeamBlock({
             : undefined
         }
         className={cn(
-          '@container relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
+          'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
           highlighted ? colors.blockFilled : colors.block,
           selectable && !loading && 'cursor-pointer transition-opacity hover:opacity-90',
           loading && 'pointer-events-none',
@@ -141,8 +139,8 @@ export function TeamBlock({
             alignRight ? 'pl-10 pr-2 md:pl-14 md:pr-4' : 'pr-10 pl-2 md:pr-14 md:pl-4',
           )}
         >
-          <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} size={nameSize} />
-          <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} size={nameSize} />
+          <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} />
+          <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} />
         </div>
       </div>
     </div>
