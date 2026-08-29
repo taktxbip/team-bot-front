@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
 
 const DEFAULT_NAME_FONT_SIZE = 18
 const MIN_NAME_FONT_SIZE = 12
-const MAX_NAME_FONT_SIZE = 40
+const MAX_NAME_FONT_SIZE = 80
 const NAME_FONT_SIZE_STEP = 2
 
 type PlayDisplaySettingsContextValue = {
