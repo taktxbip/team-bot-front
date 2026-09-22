@@ -30,7 +30,12 @@ export function WinRateTable({ playerName, winRates, loading, error }: WinRateTa
         )}
 
         {!loading && error && (
-          <div className="px-5 py-4 text-sm text-destructive">{error}</div>
+          <div className="px-5 py-4">
+            <div className="text-sm font-medium text-foreground">Failed to load win rates</div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Probably not enough data, play more 🏸
+            </p>
+          </div>
         )}
 
         {!loading && !error && winRates.length === 0 && (
