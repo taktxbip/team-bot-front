@@ -81,7 +81,7 @@ export function RankHistoryChart({ history, loading, error }: RankHistoryChartPr
                 stroke="var(--chart-2)"
                 strokeWidth={2}
                 dot={{ r: 3, fill: 'var(--chart-2)', strokeWidth: 0 }}
-                activeDot={{ r: 5, strokeWidth: 0, outline: 'none' }}
+                activeDot={{ r: 5, strokeWidth: 0 }}
               />
             </LineChart>
           </ResponsiveContainer>
