@@ -43,7 +43,7 @@ export function RankHistoryChart({ history, loading, error }: RankHistoryChartPr
       )}
 
       {!loading && !error && history.length > 0 && (
-        <div className="h-64 w-full px-2 py-4 sm:px-4">
+        <div className="h-64 w-full px-2 py-4 sm:px-4 [&_.recharts-surface]:outline-none [&_svg]:outline-none [&_*]:outline-none [&_*:focus]:outline-none [&_*:focus-visible]:outline-none">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={history} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
               <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
@@ -81,7 +81,7 @@ export function RankHistoryChart({ history, loading, error }: RankHistoryChartPr
                 stroke="var(--chart-2)"
                 strokeWidth={2}
                 dot={{ r: 3, fill: 'var(--chart-2)', strokeWidth: 0 }}
-                activeDot={{ r: 5 }}
+                activeDot={{ r: 5, strokeWidth: 0, outline: 'none' }}
               />
             </LineChart>
           </ResponsiveContainer>

@@ -77,6 +77,10 @@ export function WinRateTable({ playerName, winRates, loading, error }: WinRateTa
           </table>
         )}
       </div>
+
+      <p className="px-1 text-xs text-muted-foreground">
+        Updates at 23:00 Thailand time
+      </p>
     </section>
   )
 }

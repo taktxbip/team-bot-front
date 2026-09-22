@@ -133,3 +133,49 @@
     @apply font-sans;
     }
 }
+
+@keyframes court-quake {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  8% {
+    transform: translate3d(0, 10px, 0) rotate(0deg);
+  }
+  14% {
+    transform: translate3d(-14px, -4px, 0) rotate(-1.2deg);
+  }
+  22% {
+    transform: translate3d(16px, 6px, 0) rotate(1.4deg);
+  }
+  30% {
+    transform: translate3d(-12px, -8px, 0) rotate(-1deg);
+  }
+  40% {
+    transform: translate3d(10px, 4px, 0) rotate(0.8deg);
+  }
+  50% {
+    transform: translate3d(-8px, -3px, 0) rotate(-0.6deg);
+  }
+  62% {
+    transform: translate3d(6px, 2px, 0) rotate(0.4deg);
+  }
+  74% {
+    transform: translate3d(-3px, -1px, 0) rotate(-0.2deg);
+  }
+  86% {
+    transform: translate3d(2px, 1px, 0) rotate(0.1deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+@utility animate-court-quake {
+  animation: court-quake 0.85s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-court-quake {
+    animation: none;
+  }
+}
