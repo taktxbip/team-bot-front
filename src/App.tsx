@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/components/AppLayout'
 import { PlayPage } from '@/pages/PlayPage'
+import { PlayerRankingsPage } from '@/pages/PlayerRankingsPage'
 import { RankingsPage } from '@/pages/RankingsPage'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
           <Route index element={<Navigate to="play" replace />} />
           <Route path="play" element={<PlayPage />} />
           <Route path="rankings" element={<RankingsPage />} />
+          <Route path="rankings/:playerName" element={<PlayerRankingsPage />} />
           <Route path="*" element={<Navigate to="play" replace />} />
         </Route>
       </Routes>

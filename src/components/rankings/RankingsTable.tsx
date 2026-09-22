@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUp } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import type { RankingEntry } from '@/types/ranking'
 import { cn } from '@/lib/utils'
 
@@ -58,7 +59,12 @@ export function RankingsTable({ rankings }: RankingsTableProps) {
               <td className="px-5 py-3 align-baseline">
                 <span className="inline-flex items-baseline gap-2 leading-none">
                   <span className="text-sm text-muted-foreground">{index + 1}.</span>
-                  <span className="text-base font-semibold text-foreground">{entry.name}</span>
+                  <Link
+                    to={`/rankings/${encodeURIComponent(entry.name)}`}
+                    className="text-base font-semibold text-foreground hover:underline"
+                  >
+                    {entry.name}
+                  </Link>
                   <span className="text-base leading-none" aria-hidden>
                     {entry.flag}
                   </span>
