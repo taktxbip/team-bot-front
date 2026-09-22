@@ -23,7 +23,7 @@ export function RankHistoryChart({ history, loading, error }: RankHistoryChartPr
   return (
     <div className="rounded-xl bg-card">
       <div className="border-b px-5 py-3">
-        <h2 className="text-sm font-medium text-muted-foreground">Elo over time</h2>
+        <h2 className="text-sm font-medium text-muted-foreground">Rankings over time</h2>
       </div>
 
       {loading && (

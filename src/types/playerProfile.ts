@@ -9,3 +9,9 @@ export type EloHistoryPoint = {
   elo: number
   date: string
 }
+
+export type WinRateEntry = {
+  teammateId: number
+  teammateName: string
+  rate: number
+}

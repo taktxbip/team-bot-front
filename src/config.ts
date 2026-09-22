@@ -21,3 +21,7 @@ export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
 /** Elo history REST API (`?name=` query) */
 export const ELO_HISTORY_API_URL = 'https://api.bbbplay.top/elo-history'
 // export const ELO_HISTORY_API_URL = 'http://localhost:5500/elo-history'
+
+/** Win rate REST API (`?name=` query) */
+export const WIN_RATE_API_URL = 'https://api.bbbplay.top/win-rate'
+// export const WIN_RATE_API_URL = 'http://localhost:5500/win-rate'

@@ -1,20 +1,36 @@
 import { useParams } from 'react-router-dom'
+import { FitWidthText } from '@/components/FitWidthText'
 import { RankHistoryChart } from '@/components/rankings/RankHistoryChart'
+import { WinRateTable } from '@/components/rankings/WinRateTable'
 import { useEloHistory } from '@/hooks/useEloHistory'
 import { useRankings } from '@/hooks/useRankings'
+import { useWinRate } from '@/hooks/useWinRate'
 
 export function PlayerRankingsPage() {
   const { playerName: playerNameParam } = useParams<{ playerName: string }>()
   const playerName = playerNameParam ? decodeURIComponent(playerNameParam) : ''
   const { history, loading, error } = useEloHistory(playerName || undefined)
+  const {
+    winRates,
+    loading: winRatesLoading,
+    error: winRatesError,
+  } = useWinRate(playerName || undefined)
   const { rankings } = useRankings()
   const flag = rankings.find(
     (entry) => entry.name.toLowerCase() === playerName.toLowerCase(),
   )?.flag
 
-  console.log({ history });
+  if (!playerName) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <main className="mx-auto flex w-full max-w-[500px] min-h-48 items-center justify-center rounded-xl border border-dashed text-muted-foreground">
+          Player not found
+        </main>
+      </div>
+    )
+  }
 
-  if (!history?.length) {
+  if (!loading && !history.length) {
     return (
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <main className="mx-auto flex w-full max-w-[500px] min-h-48 items-center justify-center rounded-xl border border-dashed text-muted-foreground">
@@ -25,8 +41,19 @@ export function PlayerRankingsPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-      <main className="mx-auto flex w-full max-w-[500px] flex-col gap-6">
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 select-none overflow-hidden px-5 md:px-8"
+        aria-hidden
+      >
+        <FitWidthText
+          text={playerName}
+          fill={0.8}
+          className="-translate-y-[12%] font-black tracking-tighter text-foreground/[0.07] dark:text-foreground/[0.09]"
+        />
+      </div>
+
+      <main className="relative z-10 mx-auto flex w-full max-w-[500px] flex-col gap-6">
         <header className="flex items-baseline gap-3 px-1">
           <h1 className="text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
             {playerName}
@@ -39,6 +66,12 @@ export function PlayerRankingsPage() {
         </header>
 
         <RankHistoryChart history={history} loading={loading} error={error} />
+        <WinRateTable
+          playerName={playerName}
+          winRates={winRates}
+          loading={winRatesLoading}
+          error={winRatesError}
+        />
       </main>
     </div>
   )
