@@ -16,3 +16,8 @@ export const MATCH_WS_URL = resolveMatchWsUrl()
 
 /** Rankings REST API */
 export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
+// export const RANKINGS_API_URL = 'http://localhost:5500/rankings'
+
+/** Elo history REST API (`?name=` query) */
+export const ELO_HISTORY_API_URL = 'https://api.bbbplay.top/elo-history'
+// export const ELO_HISTORY_API_URL = 'http://localhost:5500/elo-history'
