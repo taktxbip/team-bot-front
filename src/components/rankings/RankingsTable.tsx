@@ -41,7 +41,7 @@ export function RankingsTable({ rankings }: RankingsTableProps) {
   return (
     <div className="rounded-xl bg-card">
       <table className="w-full border-collapse text-left">
-        <thead className="sticky top-0 bg-card">
+        <thead className="sticky top-0 z-[2] bg-card">
           <tr className="border-b text-sm text-muted-foreground">
             <th className="w-full px-5 py-3 font-medium">Player</th>
             <th className="whitespace-nowrap py-3 pl-2 pr-1 text-right font-medium" aria-label="Position change" />
