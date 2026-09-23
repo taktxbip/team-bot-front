@@ -15,3 +15,21 @@ export type WinRateEntry = {
   teammateName: string
   rate: number
 }
+
+/** Raw `/player-stats` response */
+export type PlayerStatsApi = {
+  rank: number
+  elo: number
+  eloAllTimeLowest: number
+  eloAllTimeHighest: number
+  gamesPlayed: number
+}
+
+export type PlayerRankStats = {
+  currentRank: number
+  points: number
+  gamesPlayed: number
+  allTimeHigh: number
+  allTimeLow: number
+  conditionDescription?: string
+}

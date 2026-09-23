@@ -4,5 +4,6 @@ export type RankingEntry = {
   flag: string
   change: number
   changeElo: number
+  onFire: boolean
 }
 

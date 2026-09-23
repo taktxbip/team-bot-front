@@ -25,3 +25,11 @@ export const ELO_HISTORY_API_URL = 'https://api.bbbplay.top/elo-history'
 /** Win rate REST API (`?name=` query) */
 export const WIN_RATE_API_URL = 'https://api.bbbplay.top/win-rate'
 // export const WIN_RATE_API_URL = 'http://localhost:5500/win-rate'
+
+/** Last ten games REST API (`?name=` query) — boolean[] wins */
+export const LAST_TEN_GAMES_API_URL = 'https://api.bbbplay.top/last-ten-games'
+// export const LAST_TEN_GAMES_API_URL = 'http://localhost:5500/last-ten-games'
+
+/** Player stats REST API (`?name=` query) */
+export const PLAYER_STATS_API_URL = 'https://api.bbbplay.top/player-stats'
+// export const PLAYER_STATS_API_URL = 'http://localhost:5500/player-stats'

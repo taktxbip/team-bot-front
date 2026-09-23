@@ -40,6 +40,7 @@ export function useRankings(url = RANKINGS_API_URL): UseRankingsResult {
               flag: item.flag ?? '',
               change: typeof item.change === 'number' ? Math.trunc(item.change) : 0,
               changeElo: typeof item.changeElo === 'number' ? item.changeElo : 0,
+              onFire: item.onFire === true,
             }
           }),
         )

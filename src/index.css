@@ -128,9 +128,10 @@
     }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
     }
   html {
-    @apply font-sans;
+    font-family: var(--font-sans);
     }
 }
 
@@ -179,3 +180,27 @@
     animation: none;
   }
 }
+@keyframes svg-fire-distort {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate3d(0, 0, 0) scaleY(1) skewX(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(0.15%, 0, 0) scaleY(1.015) skewX(0.15deg);
+  }
+}
+
+@utility animate-svg-fire-distort {
+  animation: svg-fire-distort 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-svg-fire-distort {
+    animation: none;
+    opacity: 0.95;
+    transform: none;
+  }
+}
+

@@ -1,8 +1,12 @@
 import { useParams } from 'react-router-dom'
 import { FitWidthText } from '@/components/FitWidthText'
+import { LastTenGames } from '@/components/rankings/LastTenGames'
+import { PlayerStatsCards } from '@/components/rankings/PlayerStatsCards'
 import { RankHistoryChart } from '@/components/rankings/RankHistoryChart'
 import { WinRateTable } from '@/components/rankings/WinRateTable'
 import { useEloHistory } from '@/hooks/useEloHistory'
+import { useLastTenGames } from '@/hooks/useLastTenGames'
+import { usePlayerStats } from '@/hooks/usePlayerStats'
 import { useRankings } from '@/hooks/useRankings'
 import { useWinRate } from '@/hooks/useWinRate'
 
@@ -15,6 +19,16 @@ export function PlayerRankingsPage() {
     loading: winRatesLoading,
     error: winRatesError,
   } = useWinRate(playerName || undefined)
+  const {
+    results: lastTenResults,
+    loading: lastTenLoading,
+    error: lastTenError,
+  } = useLastTenGames(playerName || undefined)
+  const {
+    stats: playerStats,
+    loading: playerStatsLoading,
+    error: playerStatsError,
+  } = usePlayerStats(playerName || undefined)
   const { rankings } = useRankings()
   const flag = rankings.find(
     (entry) => entry.name.toLowerCase() === playerName.toLowerCase(),
@@ -65,6 +79,17 @@ export function PlayerRankingsPage() {
           )}
         </header>
 
+        <PlayerStatsCards
+          stats={playerStats}
+          loading={playerStatsLoading}
+          error={playerStatsError}
+        />
+
+        <LastTenGames
+          results={lastTenResults}
+          loading={lastTenLoading}
+          error={lastTenError}
+        />
         <RankHistoryChart history={history} loading={loading} error={error} />
         <WinRateTable
           playerName={playerName}

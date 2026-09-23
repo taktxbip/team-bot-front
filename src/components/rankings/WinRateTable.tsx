@@ -16,7 +16,7 @@ export function WinRateTable({ playerName, winRates, loading, error }: WinRateTa
   return (
     <section className="flex flex-col gap-3">
       <header className="px-1">
-        <h2 className="text-xl font-semibold tracking-tight text-foreground">Win Rate</h2>
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">Win Rate*</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Based on the past 2 months. <span className="font-semibold">{playerName}</span> must have played at least 10 games with a teammate to appear in the table.
         </p>
@@ -79,7 +79,7 @@ export function WinRateTable({ playerName, winRates, loading, error }: WinRateTa
       </div>
 
       <p className="px-1 text-xs text-muted-foreground">
-        Updates at 23:00 Thailand time
+        *Updates at 23:00 Thailand time
       </p>
     </section>
   )
