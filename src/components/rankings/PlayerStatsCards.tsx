@@ -131,7 +131,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
 
       <div className="flex min-w-0 flex-col gap-3">
         <StatCard
-          label="Current rank*"
+          label="Current rank"
           value={
             <>
               #{currentRank}{' '}
