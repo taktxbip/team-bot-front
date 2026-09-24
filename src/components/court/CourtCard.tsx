@@ -17,6 +17,13 @@ type CourtCardProps = {
   onSelectWinner?: (winnerKey: string) => void
   canSelectWinner?: boolean
   pendingWinnerKey?: string | null
+  /** Slam order index for team1 (null = no stamp). */
+  team1StampIndex?: number | null
+  /** Slam order index for team2 (null = no stamp). */
+  team2StampIndex?: number | null
+  stampIntroDelayMs?: number
+  stampStaggerMs?: number
+  onStampImpact?: () => void
 }
 
 export function CourtCard({
@@ -26,6 +33,11 @@ export function CourtCard({
   onSelectWinner,
   canSelectWinner = false,
   pendingWinnerKey = null,
+  team1StampIndex = null,
+  team2StampIndex = null,
+  stampIntroDelayMs = 1000,
+  stampStaggerMs = 213,
+  onStampImpact,
 }: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
@@ -33,6 +45,8 @@ export function CourtCard({
   const selectable = canSelectWinner && Boolean(onSelectWinner) && !pendingWinnerKey
   const team1Key = getTeamWinnerKey(court.team1)
   const team2Key = getTeamWinnerKey(court.team2)
+  const team1Stamp = court.team1.stamp
+  const team2Stamp = court.team2.stamp
 
   return (
     <Card className="flex flex-col gap-0 md:h-full md:min-h-0">
@@ -52,6 +66,13 @@ export function CourtCard({
             selectable={selectable}
             loading={pendingWinnerKey === team1Key}
             onSelect={() => onSelectWinner?.(team1Key)}
+            stamp={team1Stamp}
+            stampSlamDelayMs={
+              team1StampIndex != null
+                ? stampIntroDelayMs + team1StampIndex * stampStaggerMs
+                : 0
+            }
+            onStampImpact={team1Stamp ? onStampImpact : undefined}
           />
           <div className="flex shrink-0 flex-col gap-2">
             <div className="relative text-sm opacity-0" aria-hidden>
@@ -72,6 +93,13 @@ export function CourtCard({
             selectable={selectable}
             loading={pendingWinnerKey === team2Key}
             onSelect={() => onSelectWinner?.(team2Key)}
+            stamp={team2Stamp}
+            stampSlamDelayMs={
+              team2StampIndex != null
+                ? stampIntroDelayMs + team2StampIndex * stampStaggerMs
+                : 0
+            }
+            onStampImpact={team2Stamp ? onStampImpact : undefined}
           />
         </div>
         <WinProbabilityBar

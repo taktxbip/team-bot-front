@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 const links = [
   { to: '/play', label: 'Play' },
-  { to: '/rankings', label: 'Rankings' },
+  { to: '/rankings', label: 'Rankings' }
 ] as const
 
 export function AppNav() {

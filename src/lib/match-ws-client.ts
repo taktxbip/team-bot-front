@@ -1,5 +1,5 @@
 import { io, type Socket } from 'socket.io-client'
-import type { CourtsMessage, SessionStatus } from '@/types/court'
+import type { CourtsMessage, SessionStatus, TeamStamp } from '@/types/court'
 
 export type WirePlayer = {
   id?: string
@@ -14,6 +14,7 @@ export type WireTeam = {
   playerNames?: [string, string]
   player1?: WirePlayer
   player2?: WirePlayer
+  stamp?: TeamStamp
 }
 
 export type WireCourt = {
@@ -72,6 +73,9 @@ function mapWireTeam(team: WireTeam, side: 'team1' | 'team2') {
     key: team.key,
     rank: team.rank ?? 0,
     winProbability: team.winProbability ?? 50,
+    stamp: (
+      team.stamp === 'best-teammates' || team.stamp === 'coin-flip' ? team.stamp : ''
+    ) as TeamStamp,
     player1: mapWirePlayer(
       team.player1,
       team.playerNames?.[0] ?? 'Player 1',
@@ -86,12 +90,8 @@ function mapWireTeam(team: WireTeam, side: 'team1' | 'team2') {
 }
 
 export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
-
-  console.log(payload);
-  console.log('payload');
-
-  const status = payload.status ?? 'finished';
-  const output = {
+  const status = payload.status ?? 'finished'
+  return {
     status: payload.confirmed ? 'finished' : status,
     confirmed: payload.confirmed,
     courts: payload.courts.map((court) => ({
@@ -102,7 +102,5 @@ export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
       team1: mapWireTeam(court.team1, 'team1'),
       team2: mapWireTeam(court.team2, 'team2'),
     })),
-  };
-
-  return output;
+  }
 }

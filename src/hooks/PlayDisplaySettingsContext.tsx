@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 const STORAGE_KEY = 'play-name-font-size'
-const DEFAULT_NAME_FONT_SIZE = 18
+export const DEFAULT_NAME_FONT_SIZE = 18
 const MIN_NAME_FONT_SIZE = 12
 const MAX_NAME_FONT_SIZE = 80
 const NAME_FONT_SIZE_STEP = 2

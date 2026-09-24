@@ -154,7 +154,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
         <StatCard label="Games played*" value={formatCount(gamesPlayed)} />
       </div>
 
-      <div className="relative isolate flex w-[9.5rem] flex-col overflow-hidden rounded-xl bg-card px-3 pt-4 pb-6 sm:w-48 sm:px-4">
+      <div className="relative isolate flex w-[9.5rem] flex-col overflow-hidden rounded-xl bg-card px-3 py-4 sm:w-48 sm:px-4">
         {onFire && (
           <div
             aria-hidden
@@ -167,7 +167,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
         <p className="relative z-10 mt-1 px-1 text-xs leading-snug text-muted-foreground">
           {description}
         </p>
-
+ 
         <div className="relative z-10 mt-4 flex min-h-40 flex-1 items-stretch gap-2.5 px-1 pb-1 pt-2">
           <div className="relative w-2.5 shrink-0">
             <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border" />
@@ -222,6 +222,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
             </div>
           </div>
         </div>
+
       </div>
 
     </section>

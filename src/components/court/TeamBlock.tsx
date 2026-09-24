@@ -1,10 +1,20 @@
-import { useEffect, useRef } from 'react'
-import type { Team } from '@/types/court'
+import { useEffect, useRef, type CSSProperties } from 'react'
+import type { Team, TeamStamp } from '@/types/court'
 import { cn } from '@/lib/utils'
 import { teamStyles, type TeamSide } from '@/lib/teamColors'
 import { fireTeamConfetti, type ConfettiSize } from '@/lib/teamConfetti'
 import { SIMPSON_LOADER_SRC, useSimpsonLoaderReady } from '@/lib/simpsonLoader'
+import {
+  DEFAULT_NAME_FONT_SIZE,
+  usePlayDisplaySettings,
+} from '@/hooks/PlayDisplaySettingsContext'
+import { Stamp } from '@/components/rankings/Stamp'
 import { PlayerRow } from './PlayerRow'
+
+/** Slam duration — keep in sync with `animate-stamp-slam` in index.css */
+export const STAMP_SLAM_DURATION_MS = 367
+/** Impact is the hard stop at the end of the ease-in slam. */
+export const STAMP_SLAM_IMPACT_RATIO = 1
 
 type TeamBlockProps = {
   team: Team
@@ -17,6 +27,12 @@ type TeamBlockProps = {
   onSelect?: () => void
   selectable?: boolean
   loading?: boolean
+  /** Stamp kind from WS (`''` = none). */
+  stamp?: TeamStamp
+  /** Delay before the stamp slam starts (ms). */
+  stampSlamDelayMs?: number
+  /** Fired when the stamp hits the card (for court quake). */
+  onStampImpact?: () => void
 }
 
 export function TeamBlock({
@@ -30,6 +46,9 @@ export function TeamBlock({
   onSelect,
   selectable = false,
   loading = false,
+  stamp = '',
+  stampSlamDelayMs = 0,
+  onStampImpact,
 }: TeamBlockProps) {
   const colors = teamStyles[side]
   const alignRight = side === 'team1'
@@ -38,6 +57,9 @@ export function TeamBlock({
   const wasWinnerRef = useRef(isWinner)
   const loaderReady = useSimpsonLoaderReady()
   const showLoader = Boolean(loading)
+  const stampOnLeft = side === 'team1'
+  const { nameFontSize } = usePlayDisplaySettings()
+  const stampScale = nameFontSize / DEFAULT_NAME_FONT_SIZE / 3
 
   useEffect(() => {
     if (isWinner && !wasWinnerRef.current && canvasRef.current) {
@@ -45,6 +67,20 @@ export function TeamBlock({
     }
     wasWinnerRef.current = isWinner
   }, [isWinner, side, confettiSize])
+
+  useEffect(() => {
+    if (!stamp || !onStampImpact) return
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) {
+      const id = window.setTimeout(onStampImpact, stampSlamDelayMs)
+      return () => window.clearTimeout(id)
+    }
+
+    const impactAt = stampSlamDelayMs + STAMP_SLAM_DURATION_MS * STAMP_SLAM_IMPACT_RATIO
+    const id = window.setTimeout(onStampImpact, impactAt)
+    return () => window.clearTimeout(id)
+  }, [stamp, stampSlamDelayMs, onStampImpact])
 
   return (
     <div className="relative flex min-w-0 flex-1 flex-col gap-2">
@@ -76,15 +112,16 @@ export function TeamBlock({
         onKeyDown={
           selectable && !loading
             ? (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  onSelect?.()
-                }
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                onSelect?.()
               }
+            }
             : undefined
         }
         className={cn(
-          'relative flex flex-1 flex-col overflow-hidden rounded-xl border-2 px-5 py-8',
+          'relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8',
+          stamp ? 'overflow-visible' : 'overflow-hidden',
           highlighted ? colors.blockFilled : colors.block,
           selectable && !loading && 'cursor-pointer transition-opacity hover:opacity-90',
           loading && 'pointer-events-none',
@@ -92,12 +129,35 @@ export function TeamBlock({
       >
         <canvas
           ref={canvasRef}
-          className="pointer-events-none absolute inset-0 z-0 h-full w-full"
+          className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden rounded-[10px]"
           aria-hidden
         />
 
+        {stamp ? (
+          <div
+            aria-hidden
+            className={cn(
+              'pointer-events-none absolute top-1.5 z-[5]',
+              stampOnLeft ? 'left-1.5' : 'right-1.5',
+            )}
+          >
+            <Stamp
+              variant="best-teammates"
+              color="#3f6b54"
+              className="animate-stamp-slam opacity-90"
+              style={
+                {
+                  '--stamp-scale': stampScale,
+                  transformOrigin: stampOnLeft ? 'top left' : 'top right',
+                  animationDelay: `${stampSlamDelayMs}ms`,
+                } as CSSProperties
+              }
+            />
+          </div>
+        ) : null}
+
         {showLoader && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/70">
+          <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden rounded-[10px] bg-background/70">
             <img
               src={SIMPSON_LOADER_SRC}
               alt="Loading"
@@ -116,7 +176,11 @@ export function TeamBlock({
             )}
           >
             {isWinner && (
-              <span className="text-3xl leading-none select-none md:text-5xl" aria-hidden>
+              <span
+                className="leading-none select-none"
+                style={{ fontSize: `${Math.round(nameFontSize * 1.5)}px` }}
+                aria-hidden
+              >
                 🏆
               </span>
             )}

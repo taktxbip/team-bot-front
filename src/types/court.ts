@@ -5,12 +5,15 @@ type Player = {
   name: string
 }
 
+type TeamStamp = '' | 'best-teammates' | 'coin-flip'
+
 type Team = {
   key?: string
   player1: Player
   player2: Player
   rank: number
   winProbability: number
+  stamp: TeamStamp
 }
 
 type Court = {
@@ -31,7 +34,8 @@ type CourtsMessage = {
 export type {
   Player,
   Team,
+  TeamStamp,
   SessionStatus,
   Court,
-  CourtsMessage
+  CourtsMessage,
 }

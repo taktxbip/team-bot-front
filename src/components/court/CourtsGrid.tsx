@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { Court } from '@/types/court'
 import { getConfettiSizeForCourtCount } from '@/lib/teamConfetti'
 import { cn } from '@/lib/utils'
@@ -20,8 +20,19 @@ function getGridClass(count: number): string {
   return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
 }
 
-const QUAKE_ENABLED = false
-const QUAKE_DELAY_MS = 5000
+/** Wait after teams appear before the first stamp slams. */
+const STAMP_INTRO_DELAY_MS = 1000
+/** Gap between each stamp slam. */
+const STAMP_STAGGER_MS = 213
+
+function buildStampIndices(courts: Court[]) {
+  let next = 0
+  return courts.map((court) => {
+    const team1StampIndex = court.team1.stamp ? next++ : null
+    const team2StampIndex = court.team2.stamp ? next++ : null
+    return { team1StampIndex, team2StampIndex }
+  })
+}
 
 export function CourtsGrid({
   courts,
@@ -31,21 +42,17 @@ export function CourtsGrid({
   pendingWinnerKey,
 }: CourtsGridProps) {
   const [quake, setQuake] = useState(false)
-  const hasQuakedRef = useRef(false)
+  const stampIndices = useMemo(() => buildStampIndices(courts), [courts])
 
-  useEffect(() => {
-    if (!QUAKE_ENABLED || courts.length === 0 || hasQuakedRef.current) return
+  const handleStampImpact = useCallback(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) return
-
-    const timeoutId = window.setTimeout(() => {
-      hasQuakedRef.current = true
-      setQuake(true)
-    }, QUAKE_DELAY_MS)
-
-    return () => window.clearTimeout(timeoutId)
-  }, [courts.length])
+    // Drop class then re-add next frame so consecutive impacts retrigger
+    setQuake(false)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setQuake(true))
+    })
+  }, [])
 
   if (courts.length === 0) {
     return (
@@ -75,6 +82,11 @@ export function CourtsGrid({
           confirmed={confirmed}
           confettiSize={confettiSize}
           staggerIndex={index}
+          team1StampIndex={stampIndices[index]?.team1StampIndex ?? null}
+          team2StampIndex={stampIndices[index]?.team2StampIndex ?? null}
+          stampIntroDelayMs={STAMP_INTRO_DELAY_MS}
+          stampStaggerMs={STAMP_STAGGER_MS}
+          onStampImpact={handleStampImpact}
           onSelectWinner={onSelectWinner}
           canSelectWinner={canSelectWinner}
           pendingWinnerKey={pendingWinnerKey}

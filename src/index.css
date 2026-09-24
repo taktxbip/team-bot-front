@@ -180,6 +180,33 @@
     animation: none;
   }
 }
+
+/* Stamp flies in from the viewer (ease-in), then stops hard on impact. */
+@keyframes stamp-slam {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--stamp-rotate, 0deg)) scale(calc(var(--stamp-scale, 1) * 4.5));
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(var(--stamp-rotate, 0deg)) scale(var(--stamp-scale, 1));
+    filter: blur(0);
+  }
+}
+
+@utility animate-stamp-slam {
+  animation: stamp-slam 0.367s ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-stamp-slam {
+    animation: none;
+    opacity: 1;
+    transform: rotate(var(--stamp-rotate, 0deg)) scale(var(--stamp-scale, 1));
+    filter: none;
+  }
+}
 @keyframes svg-fire-distort {
   0%,
   100% {
