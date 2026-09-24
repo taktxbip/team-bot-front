@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { FitWidthText } from '@/components/FitWidthText'
 import { LastTenGames } from '@/components/rankings/LastTenGames'
@@ -9,6 +10,13 @@ import { useLastTenGames } from '@/hooks/useLastTenGames'
 import { usePlayerStats } from '@/hooks/usePlayerStats'
 import { useRankings } from '@/hooks/useRankings'
 import { useWinRate } from '@/hooks/useWinRate'
+
+/** Scroll distance (px) over which the watermark finishes its parallax. */
+const WATERMARK_PARALLAX_RANGE_PX = 280
+/** Max upward shift as a fraction of the watermark height. */
+const WATERMARK_PARALLAX_Y = -0.35
+/** Max scale multiplier added at full scroll. */
+const WATERMARK_PARALLAX_SCALE = 0.28
 
 export function PlayerRankingsPage() {
   const { playerName: playerNameParam } = useParams<{ playerName: string }>()
@@ -34,6 +42,39 @@ export function PlayerRankingsPage() {
     (entry) => entry.name.toLowerCase() === playerName.toLowerCase(),
   )?.flag
 
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const watermarkRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const scroller = scrollRef.current
+    const watermark = watermarkRef.current
+    if (!scroller || !watermark) return
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) return
+
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const progress = Math.min(1, scroller.scrollTop / WATERMARK_PARALLAX_RANGE_PX)
+      const y = WATERMARK_PARALLAX_Y * progress * 100
+      const scale = 1 + WATERMARK_PARALLAX_SCALE * progress
+      watermark.style.transform = `translateY(${y}%) scale(${scale})`
+    }
+
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(update)
+    }
+
+    update()
+    scroller.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      scroller.removeEventListener('scroll', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
+    }
+  }, [playerName, loading, history.length])
+
   if (!playerName) {
     return (
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
@@ -55,9 +96,10 @@ export function PlayerRankingsPage() {
   }
 
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+    <div ref={scrollRef} className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 select-none overflow-hidden px-5 md:px-8"
+        ref={watermarkRef}
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 origin-top select-none overflow-hidden px-5 will-change-transform md:px-8"
         aria-hidden
       >
         <FitWidthText
