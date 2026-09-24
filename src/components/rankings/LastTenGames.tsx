@@ -18,7 +18,7 @@ export function LastTenGames({ results = [], loading, error }: LastTenGamesProps
     <section className="flex flex-col gap-3">
       <header className="px-1">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">Last 10 games</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-xs text-muted-foreground">
           {loading ? 'Loading…' : error ? 'Could not load recent games' : `Won ${wins}/${total}`}
         </p>
       </header>
