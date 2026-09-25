@@ -116,7 +116,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
   const { currentRank, points, gamesPlayed, allTimeHigh, allTimeLow } = stats
   // Include current points so the marker stays on-scale if elo is outside all-time bounds
   const high = Math.max(allTimeHigh, allTimeLow, points)
-  const low = Math.min(allTimeHigh, allTimeLow, points)
+  const low = Math.min(allTimeHigh, allTimeLow, points, 1000)
   const mid = Math.round((high + low) / 2)
   const currentTop = pointsToTopPercent(points, high, low)
   const midTop = pointsToTopPercent(mid, high, low)
@@ -131,7 +131,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
 
       <div className="flex min-w-0 flex-col gap-3">
         <StatCard
-          label="Current rank"
+          label="Current rank*"
           value={
             <>
               #{currentRank}{' '}
@@ -167,7 +167,7 @@ export function PlayerStatsCards({ stats, loading, error }: PlayerStatsCardsProp
         <p className="relative z-10 mt-1 px-1 text-xs leading-snug text-muted-foreground">
           {description}
         </p>
- 
+
         <div className="relative z-10 mt-4 flex min-h-40 flex-1 items-stretch gap-2.5 px-1 pb-1 pt-2">
           <div className="relative w-2.5 shrink-0">
             <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border" />
