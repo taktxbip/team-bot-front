@@ -4,6 +4,7 @@ import { ConnectionStatus } from '@/components/ConnectionStatus'
 import { SessionStatusLabel } from '@/components/SessionStatusLabel'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { MatchDataProvider, useMatchData } from '@/hooks/MatchDataContext'
+import { ToastProvider } from '@/hooks/ToastContext'
 import { preloadSimpsonLoader } from '@/lib/simpsonLoader'
 
 void preloadSimpsonLoader()
@@ -31,13 +32,15 @@ function AppHeader() {
 
 export function AppLayout() {
   return (
-    <MatchDataProvider>
-      <div className="flex min-h-svh w-full flex-col bg-background p-5 md:h-svh md:overflow-hidden">
-        <AppHeader />
-        <div className="flex min-h-0 flex-1 flex-col">
-          <Outlet />
+    <ToastProvider>
+      <MatchDataProvider>
+        <div className="flex min-h-svh w-full flex-col bg-background p-5 md:h-svh md:overflow-hidden">
+          <AppHeader />
+          <div className="flex min-h-0 flex-1 flex-col">
+            <Outlet />
+          </div>
         </div>
-      </div>
-    </MatchDataProvider>
+      </MatchDataProvider>
+    </ToastProvider>
   )
 }

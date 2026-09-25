@@ -55,6 +55,23 @@ export function emitWinner(socket: Socket, winnerKey: string) {
   socket.emit(SET_WINNER_EVENT, winnerKey)
 }
 
+export const TOAST_EVENT = 'toast'
+
+export type ToastStatus = 'ok' | 'error'
+
+export type ToastBroadcast = {
+  status: ToastStatus
+  message: string
+}
+
+export function parseToastBroadcast(payload: unknown): ToastBroadcast | null {
+  if (!payload || typeof payload !== 'object') return null
+  const value = payload as Record<string, unknown>
+  if (value.status !== 'ok' && value.status !== 'error') return null
+  if (typeof value.message !== 'string' || !value.message.trim()) return null
+  return { status: value.status, message: value.message }
+}
+
 function mapWirePlayer(
   player: WirePlayer | undefined,
   fallbackName: string,

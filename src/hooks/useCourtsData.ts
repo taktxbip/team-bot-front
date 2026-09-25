@@ -2,10 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import { MATCH_WS_URL } from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
+import { useToast } from '@/hooks/ToastContext'
 import {
   createMatchSocket,
   emitWinner,
   mapMatchResult,
+  parseToastBroadcast,
+  TOAST_EVENT,
   type MatchResultBroadcast,
 } from '@/lib/match-ws-client'
 import type { Court, SessionStatus } from '@/types/court'
@@ -28,6 +31,9 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [error, setError] = useState<string | null>(null)
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const socketRef = useRef<Socket | null>(null)
+  const { pushToast } = useToast()
+  const pushToastRef = useRef(pushToast)
+  pushToastRef.current = pushToast
 
   useEffect(() => {
     const socket = createMatchSocket(serverUrl)
@@ -60,10 +66,17 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       }
     }
 
+    const onToast = (payload: unknown) => {
+      const toast = parseToastBroadcast(payload)
+      if (!toast) return
+      pushToastRef.current(toast)
+    }
+
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('match_result', onMatchResult)
+    socket.on(TOAST_EVENT, onToast)
 
     if (!socket.connected) {
       socket.connect()
@@ -74,6 +87,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)
       socket.off('match_result', onMatchResult)
+      socket.off(TOAST_EVENT, onToast)
       socket.disconnect()
       socketRef.current = null
     }
