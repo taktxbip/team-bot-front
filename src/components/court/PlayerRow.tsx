@@ -13,7 +13,7 @@ export function PlayerRow({ player, align = 'left' }: PlayerRowProps) {
   return (
     <div
       className={cn(
-        'min-w-0 break-words py-1 font-semibold leading-tight text-foreground',
+        'min-w-0 truncate py-1 font-semibold leading-tight text-foreground',
         align === 'right' && 'text-right',
       )}
       style={{ fontSize: `${nameFontSize}px` }}

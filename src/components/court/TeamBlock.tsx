@@ -120,7 +120,7 @@ export function TeamBlock({
             : undefined
         }
         className={cn(
-          'relative flex flex-1 flex-col rounded-xl border-2 px-5 py-8',
+          'relative flex flex-1 flex-col rounded-xl border-2 px-5 py-0',
           stamp ? 'overflow-visible' : 'overflow-hidden',
           highlighted ? colors.blockFilled : colors.block,
           selectable && !loading && 'cursor-pointer transition-opacity hover:opacity-90',
