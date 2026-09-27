@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronRight, Minus, Plus } from 'lucide-react'
+import { Minus, Plus, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePlayDisplaySettings } from '@/hooks/PlayDisplaySettingsContext'
 import { useHoldRepeat } from '@/hooks/useHoldRepeat'
@@ -41,10 +41,7 @@ export function PlaySettings() {
           aria-label={open ? 'Close display settings' : 'Open display settings'}
           onClick={() => setOpen((value) => !value)}
         >
-          <ChevronRight
-            className={cn('transition-transform duration-300', open && 'rotate-180')}
-            aria-hidden
-          />
+          <Settings aria-hidden />
         </Button>
 
         <div

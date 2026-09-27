@@ -1,3 +1,6 @@
+/** Flip to true to restore impact and welcome sounds. */
+const soundsEnabled = false
+
 const unlockers = new Map<HTMLAudioElement, () => void>()
 
 export function createSound(src: string) {
@@ -13,6 +16,8 @@ export function stopSound(audio: HTMLAudioElement) {
 
 /** Replay a clip from the start. If the browser blocks audio, it plays on the next click or keypress. */
 export function playSound(audio: HTMLAudioElement) {
+  if (!soundsEnabled) return
+
   const start = () => {
     try {
       audio.currentTime = 0
