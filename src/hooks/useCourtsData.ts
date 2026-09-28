@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Socket } from 'socket.io-client'
-import welcomeSrc from '@/assets/hello-welcome.m4a'
+import welcomeSrc from '@/assets/fx-hello-welcome-clean.mp3'
 import { MATCH_WS_URL } from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
 import { useToast } from '@/hooks/ToastContext'

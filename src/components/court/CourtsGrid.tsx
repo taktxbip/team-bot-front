@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import impactSrc from '@/assets/fx-impact.m4a'
+import impactSrc from '@/assets/fx-epic-clean.mp3'
 import type { Court } from '@/types/court'
 import { createSound, playSound, stopSound } from '@/lib/playSound'
 import { getConfettiSizeForCourtCount } from '@/lib/teamConfetti'
