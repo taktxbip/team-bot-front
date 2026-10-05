@@ -1,5 +1,5 @@
 /** Flip to true to restore impact and welcome sounds. */
-const soundsEnabled = false
+const soundsEnabled = true
 
 const unlockers = new Map<HTMLAudioElement, () => void>()
 
