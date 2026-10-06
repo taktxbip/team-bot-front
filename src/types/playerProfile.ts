@@ -16,6 +16,13 @@ export type WinRateEntry = {
   rate: number
 }
 
+/** Global team pair from unfiltered `/win-rate` */
+export type TeamWinRateEntry = {
+  key: string
+  players: [string, string]
+  rate: number
+}
+
 /** Raw `/player-stats` response */
 export type PlayerStatsApi = {
   rank: number
