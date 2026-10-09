@@ -20,7 +20,7 @@ export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
 
 /** Elo history REST API (`?name=` query) */
 export const ELO_HISTORY_API_URL = 'https://api.bbbplay.top/elo-history'
-// export const ELO_HISTORY_API_URL = 'http://localhost:5500/elo-history'
+// export const ELO_HISTORY_API_URL = 'http://localhost:5555/elo-history'
 
 /** Win rate REST API (`?name=` query) */
 export const WIN_RATE_API_URL = 'https://api.bbbplay.top/win-rate'
@@ -29,6 +29,10 @@ export const WIN_RATE_API_URL = 'https://api.bbbplay.top/win-rate'
 /** Last ten games REST API (`?name=` query) — boolean[] wins */
 export const LAST_TEN_GAMES_API_URL = 'https://api.bbbplay.top/last-ten-games'
 // export const LAST_TEN_GAMES_API_URL = 'http://localhost:5500/last-ten-games'
+
+/** Recent games detail REST API (`?name=` query) */
+export const LAST_GAMES_API_URL = 'https://api.bbbplay.top/last-games'
+// export const LAST_GAMES_API_URL = 'http://localhost:5500/last-games'
 
 /** Player stats REST API (`?name=` query) */
 export const PLAYER_STATS_API_URL = 'https://api.bbbplay.top/player-stats'

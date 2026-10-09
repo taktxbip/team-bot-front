@@ -35,6 +35,7 @@ export function useRankings(url = RANKINGS_API_URL): UseRankingsResult {
           data.map((entry) => {
             const item = entry as Partial<RankingEntry>
             return {
+              id: typeof item.id === 'number' ? item.id : undefined,
               name: item.name ?? 'Unknown',
               elo: typeof item.elo === 'number' ? item.elo : 0,
               flag: item.flag ?? '',

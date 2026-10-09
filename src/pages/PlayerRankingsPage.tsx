@@ -128,6 +128,8 @@ export function PlayerRankingsPage() {
         />
 
         <LastTenGames
+          playerName={playerName}
+          rankings={rankings}
           results={lastTenResults}
           loading={lastTenLoading}
           error={lastTenError}
