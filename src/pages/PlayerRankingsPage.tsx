@@ -127,6 +127,8 @@ export function PlayerRankingsPage() {
           error={playerStatsError}
         />
 
+        <RankHistoryChart history={history} loading={loading} error={error} />
+
         <LastTenGames
           playerName={playerName}
           rankings={rankings}
@@ -134,7 +136,7 @@ export function PlayerRankingsPage() {
           loading={lastTenLoading}
           error={lastTenError}
         />
-        <RankHistoryChart history={history} loading={loading} error={error} />
+
         <WinRateTable
           playerName={playerName}
           winRates={winRates}

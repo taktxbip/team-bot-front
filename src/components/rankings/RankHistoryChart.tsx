@@ -21,7 +21,7 @@ function formatEloTick(value: number): string {
 
 export function RankHistoryChart({ history, loading, error }: RankHistoryChartProps) {
   return (
-    <div className="rounded-xl bg-card">
+    <div className="rounded-xl bg-card -mt-3">
       <div className="border-b px-5 py-3">
         <h2 className="text-sm font-medium text-muted-foreground">Elo points over time</h2>
       </div>
