@@ -1,6 +1,5 @@
 import { CourtsGrid } from '@/components/court/CourtsGrid'
 import { PlaySettings } from '@/components/play/PlaySettings'
-import { PlayStartOverlay } from '@/components/play/PlayStartOverlay'
 import { useMatchData } from '@/hooks/MatchDataContext'
 import { PlayDisplaySettingsProvider } from '@/hooks/PlayDisplaySettingsContext'
 
