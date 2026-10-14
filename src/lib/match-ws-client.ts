@@ -49,12 +49,6 @@ export function createMatchSocket(serverUrl: string): Socket {
   return io(serverUrl, defaultOptions)
 }
 
-export const SET_WINNER_EVENT = 'winner'
-
-export function emitWinner(socket: Socket, winnerKey: string) {
-  socket.emit(SET_WINNER_EVENT, winnerKey)
-}
-
 export const TOAST_EVENT = 'toast'
 
 export type ToastStatus = 'ok' | 'error'

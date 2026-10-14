@@ -14,9 +14,13 @@ function resolveMatchWsUrl(): string {
 /** Socket.IO server for live match results */
 export const MATCH_WS_URL = resolveMatchWsUrl()
 
+/** Set winner REST API */
+export const SET_WINNER_API_URL = `https://api.bbbplay.top/set-winner`
+// export const SET_WINNER_API_URL = `http://localhost:5555/set-winner`
+
 /** Rankings REST API */
 export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
-// export const RANKINGS_API_URL = 'http://localhost:5500/rankings'
+// export const RANKINGS_API_URL = 'http://localhost:5555/rankings'
 
 /** Elo history REST API (`?name=` query) */
 export const ELO_HISTORY_API_URL = 'https://api.bbbplay.top/elo-history'

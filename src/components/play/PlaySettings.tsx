@@ -12,6 +12,8 @@ export function PlaySettings() {
     canIncreaseNameFontSize,
     decreaseNameFontSize,
     increaseNameFontSize,
+    password,
+    setPassword,
   } = usePlayDisplaySettings()
 
   const decreaseHold = useHoldRepeat(decreaseNameFontSize, {
@@ -23,13 +25,13 @@ export function PlaySettings() {
 
   return (
     <div
-      className="absolute top-1/2 -left-5 z-20 flex -translate-y-1/2 items-center"
+      className="absolute top-1/2 -left-5 z-[60] flex -translate-y-1/2 items-center"
       aria-label="Display settings"
     >
       <div
         className={cn(
           'flex items-center overflow-hidden rounded-r-xl border border-border bg-card py-2 shadow-sm transition-[width] duration-300 ease-out',
-          open ? 'w-[9.5rem]' : 'w-8',
+          open ? 'w-[13.5rem]' : 'w-8',
         )}
       >
         <Button
@@ -46,30 +48,46 @@ export function PlaySettings() {
 
         <div
           className={cn(
-            'flex min-w-0 flex-1 items-center justify-center gap-1.5 px-1.5 transition-opacity duration-300',
+            'flex min-w-0 flex-1 flex-col gap-2 px-1.5 transition-opacity duration-300',
             open ? 'opacity-100' : 'pointer-events-none opacity-0',
           )}
         >
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-lg"
-            aria-label="Decrease name size"
-            disabled={!canDecreaseNameFontSize}
-            {...decreaseHold}
-          >
-            <Minus aria-hidden />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon-lg"
-            aria-label="Increase name size"
-            disabled={!canIncreaseNameFontSize}
-            {...increaseHold}
-          >
-            <Plus aria-hidden />
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-lg"
+              aria-label="Decrease name size"
+              disabled={!canDecreaseNameFontSize}
+              {...decreaseHold}
+            >
+              <Minus aria-hidden />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-lg"
+              aria-label="Increase name size"
+              disabled={!canIncreaseNameFontSize}
+              {...increaseHold}
+            >
+              <Plus aria-hidden />
+            </Button>
+          </div>
+
+          <label className="flex flex-col gap-1 px-0.5">
+            <span className="text-[0.65rem] font-medium tracking-wide text-muted-foreground uppercase">
+              Password
+            </span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              spellCheck={false}
+              className="h-9 w-full rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            />
+          </label>
         </div>
       </div>
     </div>

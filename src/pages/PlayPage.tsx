@@ -1,6 +1,6 @@
 import { CourtsGrid } from '@/components/court/CourtsGrid'
-// import { PlayBottomAction } from '@/components/play/PlayBottomAction'
 import { PlaySettings } from '@/components/play/PlaySettings'
+import { PlayStartOverlay } from '@/components/play/PlayStartOverlay'
 import { useMatchData } from '@/hooks/MatchDataContext'
 import { PlayDisplaySettingsProvider } from '@/hooks/PlayDisplaySettingsContext'
 
@@ -18,7 +18,6 @@ export function PlayPage() {
 
         <main className="relative flex min-h-0 flex-1 flex-col">
           <PlaySettings />
-          {/* <PlayBottomAction /> */}
           <CourtsGrid
             courts={courts}
             confirmed={confirmed}
@@ -26,6 +25,7 @@ export function PlayPage() {
             canSelectWinner={connected && !confirmed}
             pendingWinnerKey={pendingWinnerKey}
           />
+          {/* <PlayStartOverlay show={confirmed} /> */}
         </main>
       </div>
     </PlayDisplaySettingsProvider>

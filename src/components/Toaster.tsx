@@ -23,10 +23,10 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
             type="button"
             onClick={() => onDismiss(toast.id)}
             className={cn(
-              'pointer-events-auto flex w-full max-w-md items-center gap-2.5 rounded-xl border px-4 py-3 text-left text-sm shadow-sm',
+              'pointer-events-auto flex w-full max-w-md items-center gap-2.5 rounded-xl border px-4 py-3 text-left text-sm opacity-100 shadow-sm',
               'animate-in fade-in slide-in-from-bottom-2 duration-300',
               isError
-                ? 'border-destructive/30 bg-destructive/10 text-destructive'
+                ? 'border-destructive bg-destructive text-white'
                 : 'border-border bg-card text-foreground',
             )}
           >

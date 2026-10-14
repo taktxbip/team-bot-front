@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import welcomeSrc from '@/assets/fx-hello-welcome-clean.mp3'
-import { MATCH_WS_URL } from '@/config'
+import { MATCH_WS_URL, SET_WINNER_API_URL } from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
+import { readStoredPassword } from '@/hooks/PlayDisplaySettingsContext'
 import { useToast } from '@/hooks/ToastContext'
 import {
   createMatchSocket,
-  emitWinner,
   mapMatchResult,
   parseToastBroadcast,
   TOAST_EVENT,
@@ -115,11 +115,34 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   }, [serverUrl])
 
   const selectWinner = useCallback((winnerKey: string) => {
-    const socket = socketRef.current
-    if (!socket?.connected) return
+    if (pendingWinnerKey) return
+
     setPendingWinnerKey(winnerKey)
-    emitWinner(socket, winnerKey)
-  }, [])
+
+    void (async () => {
+      try {
+        const response = await fetch(SET_WINNER_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: readStoredPassword(),
+            winnerKey,
+          }),
+        })
+
+        if (response?.status !== 200) {
+          throw new Error(`Failed to set winner (${response.status})`)
+        }
+      } catch (err) {
+        pushToastRef.current({
+          status: 'error',
+          message: err instanceof Error ? err.message : 'Failed to set winner',
+        })
+      } finally {
+        setPendingWinnerKey(null)
+      }
+    })()
+  }, [pendingWinnerKey])
 
   return { courts, status, confirmed, connected, error, pendingWinnerKey, selectWinner }
 }

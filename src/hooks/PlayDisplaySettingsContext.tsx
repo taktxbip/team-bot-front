@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
-const STORAGE_KEY = 'play-name-font-size'
+const NAME_FONT_SIZE_STORAGE_KEY = 'play-name-font-size'
+const PASSWORD_STORAGE_KEY = 'play-password'
 export const DEFAULT_NAME_FONT_SIZE = 18
 const MIN_NAME_FONT_SIZE = 12
 const MAX_NAME_FONT_SIZE = 80
@@ -12,7 +13,7 @@ function clampNameFontSize(value: number): number {
 
 function readStoredNameFontSize(): number {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(NAME_FONT_SIZE_STORAGE_KEY)
     if (raw == null) return DEFAULT_NAME_FONT_SIZE
     const parsed = Number(raw)
     if (!Number.isFinite(parsed)) return DEFAULT_NAME_FONT_SIZE
@@ -22,26 +23,45 @@ function readStoredNameFontSize(): number {
   }
 }
 
+export function readStoredPassword(): string {
+  try {
+    return localStorage.getItem(PASSWORD_STORAGE_KEY) ?? ''
+  } catch {
+    return ''
+  }
+}
+
 type PlayDisplaySettingsContextValue = {
   nameFontSize: number
   canDecreaseNameFontSize: boolean
   canIncreaseNameFontSize: boolean
   decreaseNameFontSize: () => void
   increaseNameFontSize: () => void
+  password: string
+  setPassword: (password: string) => void
 }
 
 const PlayDisplaySettingsContext = createContext<PlayDisplaySettingsContextValue | null>(null)
 
 export function PlayDisplaySettingsProvider({ children }: { children: ReactNode }) {
   const [nameFontSize, setNameFontSize] = useState(readStoredNameFontSize)
+  const [password, setPassword] = useState(readStoredPassword)
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, String(nameFontSize))
+      localStorage.setItem(NAME_FONT_SIZE_STORAGE_KEY, String(nameFontSize))
     } catch {
       // Ignore quota / private-mode failures
     }
   }, [nameFontSize])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PASSWORD_STORAGE_KEY, password)
+    } catch {
+      // Ignore quota / private-mode failures
+    }
+  }, [password])
 
   const value = useMemo<PlayDisplaySettingsContextValue>(
     () => ({
@@ -52,8 +72,10 @@ export function PlayDisplaySettingsProvider({ children }: { children: ReactNode 
         setNameFontSize((size) => clampNameFontSize(size - NAME_FONT_SIZE_STEP)),
       increaseNameFontSize: () =>
         setNameFontSize((size) => clampNameFontSize(size + NAME_FONT_SIZE_STEP)),
+      password,
+      setPassword,
     }),
-    [nameFontSize],
+    [nameFontSize, password],
   )
 
   return (
