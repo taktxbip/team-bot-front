@@ -38,7 +38,7 @@ export function PlaySettings() {
           type="button"
           variant="ghost"
           size="icon-sm"
-          className="shrink-0 rounded-none hover:bg-card aria-expanded:bg-card dark:hover:bg-card dark:aria-expanded:bg-card"
+          className="shrink-0 rounded-none py-12 hover:bg-card aria-expanded:bg-card dark:hover:bg-card dark:aria-expanded:bg-card"
           aria-expanded={open}
           aria-label={open ? 'Close display settings' : 'Open display settings'}
           onClick={() => setOpen((value) => !value)}
