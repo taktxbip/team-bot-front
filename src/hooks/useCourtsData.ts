@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Socket } from 'socket.io-client'
-import welcomeSrc from '@/assets/fx-hello-welcome-clean.mp3'
-import { MATCH_WS_URL, SET_WINNER_API_URL } from '@/config'
+import {
+  MATCH_WS_URL,
+  SAVE_WINNER_API_URL,
+  SET_WINNER_API_URL,
+  START_API_URL,
+} from '@/config'
 import { dummyCourtsMessage } from '@/data/dummyCourts'
 import { readStoredPassword } from '@/hooks/PlayDisplaySettingsContext'
 import { useToast } from '@/hooks/ToastContext'
@@ -12,47 +16,42 @@ import {
   TOAST_EVENT,
   type MatchResultBroadcast,
 } from '@/lib/match-ws-client'
-import { createSound, playSound, stopSound } from '@/lib/playSound'
+import { getTeamWinnerKey } from '@/lib/utils'
 import type { Court, SessionStatus } from '@/types/court'
-
-function courtLineupKey(courts: Court[]) {
-  return courts
-    .map(
-      (court) =>
-        `${court.id}:${court.team1.player1.id},${court.team1.player2.id}:${court.team2.player1.id},${court.team2.player2.id}`,
-    )
-    .join('|')
-}
 
 type UseCourtsDataResult = {
   courts: Court[]
   status: SessionStatus
-  confirmed: boolean
   connected: boolean
   error: string | null
   pendingWinnerKey: string | null
   selectWinner: (winnerKey: string) => void
+  saveWinner: (courtId: string) => void
 }
 
 export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [courts, setCourts] = useState<Court[]>(dummyCourtsMessage.courts)
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
-  const [confirmed, setConfirmed] = useState(false)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const socketRef = useRef<Socket | null>(null)
-  const lineupKeyRef = useRef(courtLineupKey(dummyCourtsMessage.courts))
-  const welcomeAudioRef = useRef<HTMLAudioElement | null>(null)
+  const startSentRef = useRef(false)
+  const startTimeoutRef = useRef<number | null>(null)
   const { pushToast } = useToast()
   const pushToastRef = useRef(pushToast)
   pushToastRef.current = pushToast
 
   useEffect(() => {
-    const welcomeAudio = createSound(welcomeSrc)
-    welcomeAudioRef.current = welcomeAudio
     const socket = createMatchSocket(serverUrl)
     socketRef.current = socket
+
+    const clearStartTimeout = () => {
+      if (startTimeoutRef.current != null) {
+        window.clearTimeout(startTimeoutRef.current)
+        startTimeoutRef.current = null
+      }
+    }
 
     const onConnect = () => {
       setConnected(true)
@@ -68,18 +67,44 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       setError(err.message)
     }
 
+    const postStart = async () => {
+      try {
+        const response = await fetch(START_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: readStoredPassword(),
+          }),
+        })
+        if (response.status !== 200) {
+          throw new Error(`Failed to start (${response.status})`)
+        }
+      } catch {
+        startSentRef.current = false
+      }
+    }
+
     const onMatchResult = (payload: MatchResultBroadcast) => {
       try {
         const message = mapMatchResult(payload)
-        const lineupKey = courtLineupKey(message.courts)
-        const isNewLineup = lineupKey.length > 0 && lineupKey !== lineupKeyRef.current
-        lineupKeyRef.current = lineupKey
         setCourts(message.courts)
         setStatus(message.status)
-        setConfirmed(Boolean(message.confirmed))
         setPendingWinnerKey(null)
         setError(null)
-        if (isNewLineup && welcomeAudioRef.current) playSound(welcomeAudioRef.current)
+
+        const allConfirmed =
+          message.courts.length > 0 && message.courts.every((court) => court.confirmed)
+        if (!allConfirmed) {
+          clearStartTimeout()
+          startSentRef.current = false
+        } else if (!startSentRef.current) {
+          startSentRef.current = true
+          clearStartTimeout()
+          startTimeoutRef.current = window.setTimeout(() => {
+            startTimeoutRef.current = null
+            void postStart()
+          }, 1000)
+        }
       } catch {
         setError('Failed to parse match result')
       }
@@ -102,6 +127,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     }
 
     return () => {
+      clearStartTimeout()
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)
@@ -109,8 +135,6 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off(TOAST_EVENT, onToast)
       socket.disconnect()
       socketRef.current = null
-      stopSound(welcomeAudio)
-      welcomeAudioRef.current = null
     }
   }, [serverUrl])
 
@@ -144,5 +168,52 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     })()
   }, [pendingWinnerKey])
 
-  return { courts, status, confirmed, connected, error, pendingWinnerKey, selectWinner }
+  const saveWinner = useCallback(
+    (courtId: string) => {
+      if (pendingWinnerKey) return
+
+      const court = courts.find((entry) => entry.id === courtId)
+      if (!court?.winner) return
+
+      const winnerTeam = court.winner === 'team1' ? court.team1 : court.team2
+      const winnerKey = getTeamWinnerKey(winnerTeam)
+      setPendingWinnerKey(winnerKey)
+
+      void (async () => {
+        try {
+          const response = await fetch(SAVE_WINNER_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: readStoredPassword(),
+              courtId,
+              winnerKey,
+            }),
+          })
+
+          if (response?.status !== 200) {
+            throw new Error(`Failed to save winner (${response.status})`)
+          }
+        } catch (err) {
+          pushToastRef.current({
+            status: 'error',
+            message: err instanceof Error ? err.message : 'Failed to save winner',
+          })
+        } finally {
+          setPendingWinnerKey(null)
+        }
+      })()
+    },
+    [courts, pendingWinnerKey],
+  )
+
+  return {
+    courts,
+    status,
+    connected,
+    error,
+    pendingWinnerKey,
+    selectWinner,
+    saveWinner,
+  }
 }

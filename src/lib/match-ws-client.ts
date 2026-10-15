@@ -24,10 +24,10 @@ export type WireCourt = {
   team1: WireTeam
   team2: WireTeam
   winner?: 'team1' | 'team2'
+  confirmed?: boolean
 }
 
 export type MatchResultBroadcast = {
-  confirmed: boolean
   type?: 'match_result'
   status?: SessionStatus
   savedAt?: string
@@ -101,17 +101,19 @@ function mapWireTeam(team: WireTeam, side: 'team1' | 'team2') {
 }
 
 export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
-  const status = payload.status ?? 'finished'
+  const courts = payload.courts.map((court) => ({
+    id: court.id,
+    name: court.name.startsWith('Court') ? court.name : `Court ${court.name}`,
+    winner: court.winner,
+    pointsChange: court.pointsChange,
+    confirmed: Boolean(court.confirmed),
+    team1: mapWireTeam(court.team1, 'team1'),
+    team2: mapWireTeam(court.team2, 'team2'),
+  }))
+  const allConfirmed = courts.length > 0 && courts.every((court) => court.confirmed)
+
   return {
-    status: payload.confirmed ? 'finished' : status,
-    confirmed: payload.confirmed,
-    courts: payload.courts.map((court) => ({
-      id: court.id,
-      name: court.name.startsWith('Court') ? court.name : `Court ${court.name}`,
-      winner: court.winner,
-      pointsChange: court.pointsChange,
-      team1: mapWireTeam(court.team1, 'team1'),
-      team2: mapWireTeam(court.team2, 'team2'),
-    })),
+    status: payload.status ?? (allConfirmed ? 'finished' : 'live'),
+    courts,
   }
 }

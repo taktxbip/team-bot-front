@@ -12,7 +12,6 @@ import { WinProbabilityBar } from './WinProbabilityBar'
 
 type CourtCardProps = {
   court: Court
-  confirmed?: boolean
   confettiSize?: ConfettiSize
   onSelectWinner?: (winnerKey: string) => void
   canSelectWinner?: boolean
@@ -24,11 +23,12 @@ type CourtCardProps = {
   stampIntroDelayMs?: number
   stampStaggerMs?: number
   onStampImpact?: () => void
+  /** Confirm/save this court's result (fired from the winner team button). */
+  onConfirmCourt?: (courtId: string) => void
 }
 
 export function CourtCard({
   court,
-  confirmed,
   confettiSize,
   onSelectWinner,
   canSelectWinner = false,
@@ -38,11 +38,13 @@ export function CourtCard({
   stampIntroDelayMs = 1000,
   stampStaggerMs = 213,
   onStampImpact,
+  onConfirmCourt,
 }: CourtCardProps) {
   const team1Won = court.winner === 'team1'
   const team2Won = court.winner === 'team2'
-  const highlightWinner = Boolean(confirmed)
+  const highlightWinner = court.confirmed
   const selectable = canSelectWinner && Boolean(onSelectWinner) && !pendingWinnerKey
+  const canConfirm = Boolean(onConfirmCourt) && !court.confirmed
   const team1Key = getTeamWinnerKey(court.team1)
   const team2Key = getTeamWinnerKey(court.team2)
   const team1Stamp = court.team1.stamp
@@ -73,6 +75,9 @@ export function CourtCard({
                 : 0
             }
             onStampImpact={team1Stamp ? onStampImpact : undefined}
+            onConfirm={
+              team1Won && canConfirm ? () => onConfirmCourt?.(court.id) : undefined
+            }
           />
           <div className="flex shrink-0 flex-col gap-2">
             <div className="relative text-sm opacity-0" aria-hidden>
@@ -100,6 +105,9 @@ export function CourtCard({
                 : 0
             }
             onStampImpact={team2Stamp ? onStampImpact : undefined}
+            onConfirm={
+              team2Won && canConfirm ? () => onConfirmCourt?.(court.id) : undefined
+            }
           />
         </div>
         <WinProbabilityBar

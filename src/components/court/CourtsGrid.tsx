@@ -8,8 +8,8 @@ import { CourtCardEnter } from './CourtCardEnter'
 
 type CourtsGridProps = {
   courts: Court[]
-  confirmed?: boolean
   onSelectWinner?: (winnerKey: string) => void
+  onConfirmCourt?: (courtId: string) => void
   canSelectWinner?: boolean
   pendingWinnerKey?: string | null
 }
@@ -38,8 +38,8 @@ function buildStampIndices(courts: Court[]) {
 
 export function CourtsGrid({
   courts,
-  confirmed,
   onSelectWinner,
+  onConfirmCourt,
   canSelectWinner,
   pendingWinnerKey,
 }: CourtsGridProps) {
@@ -99,7 +99,6 @@ export function CourtsGrid({
         <CourtCardEnter
           key={court.id}
           court={court}
-          confirmed={confirmed}
           confettiSize={confettiSize}
           staggerIndex={index}
           team1StampIndex={stampIndices[index]?.team1StampIndex ?? null}
@@ -108,7 +107,8 @@ export function CourtsGrid({
           stampStaggerMs={STAMP_STAGGER_MS}
           onStampImpact={handleStampImpact}
           onSelectWinner={onSelectWinner}
-          canSelectWinner={canSelectWinner}
+          onConfirmCourt={onConfirmCourt}
+          canSelectWinner={canSelectWinner && !court.confirmed}
           pendingWinnerKey={pendingWinnerKey}
         />
       ))}

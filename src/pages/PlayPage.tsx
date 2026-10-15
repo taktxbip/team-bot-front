@@ -4,7 +4,14 @@ import { useMatchData } from '@/hooks/MatchDataContext'
 import { PlayDisplaySettingsProvider } from '@/hooks/PlayDisplaySettingsContext'
 
 export function PlayPage() {
-  const { courts, confirmed, connected, error, pendingWinnerKey, selectWinner } = useMatchData()
+  const {
+    courts,
+    connected,
+    error,
+    pendingWinnerKey,
+    selectWinner,
+    saveWinner,
+  } = useMatchData()
 
   return (
     <PlayDisplaySettingsProvider>
@@ -19,12 +26,11 @@ export function PlayPage() {
           <PlaySettings />
           <CourtsGrid
             courts={courts}
-            confirmed={confirmed}
             onSelectWinner={selectWinner}
-            canSelectWinner={connected && !confirmed}
+            onConfirmCourt={saveWinner}
+            canSelectWinner={connected}
             pendingWinnerKey={pendingWinnerKey}
           />
-          {/* <PlayStartOverlay show={confirmed} /> */}
         </main>
       </div>
     </PlayDisplaySettingsProvider>

@@ -6,7 +6,6 @@ import { CourtCard } from './CourtCard'
 
 type CourtCardEnterProps = {
   court: Court
-  confirmed?: boolean
   confettiSize?: ConfettiSize
   staggerIndex: number
   team1StampIndex?: number | null
@@ -15,13 +14,13 @@ type CourtCardEnterProps = {
   stampStaggerMs?: number
   onStampImpact?: () => void
   onSelectWinner?: (winnerKey: string) => void
+  onConfirmCourt?: (courtId: string) => void
   canSelectWinner?: boolean
   pendingWinnerKey?: string | null
 }
 
 export function CourtCardEnter({
   court,
-  confirmed,
   confettiSize,
   staggerIndex,
   team1StampIndex = null,
@@ -30,6 +29,7 @@ export function CourtCardEnter({
   stampStaggerMs,
   onStampImpact,
   onSelectWinner,
+  onConfirmCourt,
   canSelectWinner,
   pendingWinnerKey,
 }: CourtCardEnterProps) {
@@ -53,9 +53,9 @@ export function CourtCardEnter({
     >
       <CourtCard
         court={court}
-        confirmed={confirmed}
         confettiSize={confettiSize}
         onSelectWinner={onSelectWinner}
+        onConfirmCourt={onConfirmCourt}
         canSelectWinner={canSelectWinner}
         pendingWinnerKey={pendingWinnerKey}
         team1StampIndex={team1StampIndex}

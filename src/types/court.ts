@@ -23,11 +23,11 @@ type Court = {
   team2: Team
   winner?: 'team1' | 'team2'
   pointsChange?: number
+  confirmed: boolean
 }
 
 type CourtsMessage = {
   status: SessionStatus
-  confirmed?: boolean
   courts: Court[]
 }
 

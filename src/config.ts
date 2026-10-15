@@ -18,6 +18,12 @@ export const MATCH_WS_URL = resolveMatchWsUrl()
 export const SET_WINNER_API_URL = `https://api.bbbplay.top/set-winner`
 // export const SET_WINNER_API_URL = `http://localhost:5555/set-winner`
 
+export const SAVE_WINNER_API_URL = `https://api.bbbplay.top/save-winner`
+// export const SAVE_WINNER_API_URL = `http://localhost:5555/save-winner`
+
+export const START_API_URL = `https://api.bbbplay.top/start`
+// export const START_API_URL = `http://localhost:5555/start`
+
 /** Rankings REST API */
 export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
 // export const RANKINGS_API_URL = 'http://localhost:5555/rankings'
