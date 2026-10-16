@@ -140,7 +140,7 @@ function GameRow({
         <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-sm leading-snug">
           {playerTeam.map((player, index) => (
             <span key={player.id} className="inline-flex items-baseline gap-1.5">
-              {index > 0 && <span className="text-muted-foreground">+</span>}
+              {index > 0 && <span className="text-muted-foreground">-</span>}
               <PlayerName playerId={player.playerId} namesById={namesById} />
             </span>
           ))}
