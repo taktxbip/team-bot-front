@@ -12,6 +12,8 @@ export type LastGame = {
   id: number
   date: string
   winnerTeam1: boolean
+  /** Absolute elo delta from the API; sign in the UI from win/loss. */
+  eloChange: number
   players: LastGameMatchPlayer[]
 }
 
@@ -34,6 +36,7 @@ type LastGamesApiMatch = {
   id?: number
   date?: string
   winnerTeam1?: boolean
+  elo_change?: number
   match_players?: LastGamesApiMatchPlayer[]
 }
 
@@ -47,7 +50,18 @@ function parseLastGames(data: unknown): LastGame[] {
       const item = entry as LastGamesApiMatch
       const id = typeof item.id === 'number' ? item.id : Number.NaN
       const date = typeof item.date === 'string' ? item.date : ''
-      if (!Number.isFinite(id) || !date || typeof item.winnerTeam1 !== 'boolean') return null
+      const eloChange =
+        typeof item.elo_change === 'number' && Number.isFinite(item.elo_change)
+          ? Math.abs(item.elo_change)
+          : Number.NaN
+      if (
+        !Number.isFinite(id) ||
+        !date ||
+        typeof item.winnerTeam1 !== 'boolean' ||
+        !Number.isFinite(eloChange)
+      ) {
+        return null
+      }
 
       const players = (Array.isArray(item.match_players) ? item.match_players : [])
         .map((player) => {
@@ -66,11 +80,21 @@ function parseLastGames(data: unknown): LastGame[] {
         id,
         date,
         winnerTeam1: item.winnerTeam1,
+        eloChange,
         players,
       } satisfies LastGame
     })
     .filter((game): game is LastGame => game != null)
     .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+}
+
+/** Signed elo delta for the viewed player: +win / -loss. */
+export function signedEloChange(game: LastGame, playerId: number | undefined): number {
+  if (playerId == null) return game.eloChange
+  const onTeam1 = game.players.some((player) => player.playerId === playerId && player.team1)
+  const onTeam2 = game.players.some((player) => player.playerId === playerId && !player.team1)
+  const won = onTeam1 ? game.winnerTeam1 : onTeam2 ? !game.winnerTeam1 : true
+  return won ? game.eloChange : -game.eloChange
 }
 
 export function useLastGames(playerName: string | undefined): UseLastGamesResult {
