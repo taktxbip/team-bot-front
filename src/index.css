@@ -231,3 +231,25 @@
   }
 }
 
+@keyframes confirm-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px color-mix(in oklab, var(--primary) 0%, transparent);
+  }
+}
+
+@utility animate-confirm-pulse {
+  animation: confirm-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-confirm-pulse {
+    animation: none;
+  }
+}
+

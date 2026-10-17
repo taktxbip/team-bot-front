@@ -65,10 +65,10 @@ export function TeamBlock({
   const { nameFontSize } = usePlayDisplaySettings()
   const stampScale = nameFontSize / DEFAULT_NAME_FONT_SIZE / 3
   
-  const BTN_MULTIPLIER = 0.6
+  const BTN_MULTIPLIER = 0.8
   const confirmFontSize = Math.max(12, Math.round(nameFontSize * 0.85 * BTN_MULTIPLIER))
   const confirmPadX = Math.max(8, Math.round(nameFontSize * 0.45 * BTN_MULTIPLIER))
-  const confirmPadY = Math.max(4, Math.round(nameFontSize * 0.28 * BTN_MULTIPLIER))
+  const confirmPadY = Math.max(4, Math.round(nameFontSize * 0.34 * BTN_MULTIPLIER))
   /** Winner card must not re-trigger set-winner; Confirm is a separate action. */
   const canSelect = Boolean(selectable && !loading && !isWinner)
 
@@ -215,7 +215,7 @@ export function TeamBlock({
             <Button
               type="button"
               size="sm"
-              className="h-auto whitespace-nowrap bg-primary font-semibold text-primary-foreground opacity-100 hover:bg-primary hover:opacity-100"
+              className="animate-confirm-pulse h-auto whitespace-nowrap bg-primary font-semibold text-primary-foreground opacity-100 hover:bg-primary hover:opacity-100"
               style={{
                 fontSize: `${confirmFontSize}px`,
                 paddingInline: `${confirmPadX}px`,

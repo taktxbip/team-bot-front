@@ -55,6 +55,16 @@ function formatTime(value: string): string {
   }).format(date)
 }
 
+function formatDayLabel(value: string): string {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value.slice(0, 10)
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date)
+}
+
 function formatElo(value: number): string {
   const rounded = Number.isInteger(value) ? String(value) : value.toFixed(1)
   return value > 0 ? `+${rounded}` : rounded
@@ -179,13 +189,15 @@ function GameRow({
   )
 }
 
-function PlayDayPointsChart({ data }: { data: DayPoint[] }) {
+function PlayDayPointsChart({ data, dayLabel }: { data: DayPoint[]; dayLabel: string }) {
   if (!data.length) return null
 
   return (
     <div className="rounded-xl bg-card">
       <div className="border-b px-5 py-3">
-        <h3 className="text-sm font-medium text-muted-foreground">Point change today</h3>
+        <h3 className="text-sm font-medium text-muted-foreground">
+          Point change {dayLabel}
+        </h3>
       </div>
       <div className="h-52 w-full px-2 py-4 sm:px-4 [&_.recharts-surface]:outline-none [&_svg]:outline-none [&_*]:outline-none [&_*:focus]:outline-none [&_*:focus-visible]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
@@ -267,6 +279,10 @@ export function LastTenGames({
     () => buildPlayDaySeries(detailedGames, playerId),
     [detailedGames, playerId],
   )
+  const playDayLabel = useMemo(() => {
+    if (!detailedGames.length) return ''
+    return formatDayLabel(detailedGames[0]!.date)
+  }, [detailedGames])
 
   return (
     <section className="flex flex-col gap-3">
@@ -374,7 +390,7 @@ export function LastTenGames({
 
           {!gamesLoading && !gamesError && detailedGames.length > 0 && (
             <>
-              <PlayDayPointsChart data={playDaySeries} />
+              <PlayDayPointsChart data={playDaySeries} dayLabel={playDayLabel} />
               <div className="overflow-hidden rounded-xl bg-card">
                 <ul>
                   {detailedGames.map((game) => (

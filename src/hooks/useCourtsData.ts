@@ -37,7 +37,6 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const socketRef = useRef<Socket | null>(null)
   const startSentRef = useRef(false)
-  const startTimeoutRef = useRef<number | null>(null)
   const { pushToast } = useToast()
   const pushToastRef = useRef(pushToast)
   pushToastRef.current = pushToast
@@ -45,13 +44,6 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   useEffect(() => {
     const socket = createMatchSocket(serverUrl)
     socketRef.current = socket
-
-    const clearStartTimeout = () => {
-      if (startTimeoutRef.current != null) {
-        window.clearTimeout(startTimeoutRef.current)
-        startTimeoutRef.current = null
-      }
-    }
 
     const onConnect = () => {
       setConnected(true)
@@ -95,15 +87,10 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
         const allConfirmed =
           message.courts.length > 0 && message.courts.every((court) => court.confirmed)
         if (!allConfirmed) {
-          clearStartTimeout()
           startSentRef.current = false
         } else if (!startSentRef.current) {
           startSentRef.current = true
-          clearStartTimeout()
-          startTimeoutRef.current = window.setTimeout(() => {
-            startTimeoutRef.current = null
-            void postStart()
-          }, 1000)
+          void postStart()
         }
       } catch {
         setError('Failed to parse match result')
@@ -127,7 +114,6 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     }
 
     return () => {
-      clearStartTimeout()
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)
