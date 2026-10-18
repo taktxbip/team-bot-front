@@ -1,7 +1,9 @@
 import { CourtsGrid } from '@/components/court/CourtsGrid'
 import { PlaySettings } from '@/components/play/PlaySettings'
+import { PlayStartOverlay } from '@/components/play/PlayStartOverlay'
 import { useMatchData } from '@/hooks/MatchDataContext'
 import { PlayDisplaySettingsProvider } from '@/hooks/PlayDisplaySettingsContext'
+import { useServerSettings } from '@/stores/serverSettingsStore'
 
 export function PlayPage() {
   const {
@@ -12,6 +14,10 @@ export function PlayPage() {
     selectWinner,
     saveWinner,
   } = useMatchData()
+
+  const { autoStartNext } = useServerSettings()
+
+  const allConfirmed = courts.length > 0 && courts.every((court) => court.confirmed)
 
   return (
     <PlayDisplaySettingsProvider>
@@ -31,6 +37,9 @@ export function PlayPage() {
             canSelectWinner={connected}
             pendingWinnerKey={pendingWinnerKey}
           />
+          {!autoStartNext && (
+            <PlayStartOverlay show={allConfirmed} />
+          )}
         </main>
       </div>
     </PlayDisplaySettingsProvider>

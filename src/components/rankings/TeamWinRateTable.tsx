@@ -17,7 +17,7 @@ export function TeamWinRateTable({ teamWinRates, loading, error }: TeamWinRateTa
       <header className="px-1">
         <h2 className="font-semibold tracking-tight text-foreground md:text-lg">Team Win Rates</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Based on the past 2 months. A pair must have played at least 10 games together to appear
+          Based on the past 3 months. A pair must have played at least 10 games together to appear
           in the table.
         </p>
       </header>

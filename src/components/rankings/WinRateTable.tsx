@@ -18,7 +18,7 @@ export function WinRateTable({ playerName, winRates, loading, error }: WinRateTa
       <header className="px-1">
         <h2 className="text-xl font-semibold tracking-tight text-foreground">Win Rate*</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Based on the past 2 months. <span className="font-semibold">{playerName}</span> must have played at least 10 games with a teammate to appear in the table.
+          Based on the past 3 months. <span className="font-semibold">{playerName}</span> must have played at least 10 games with a teammate to appear in the table.
         </p>
       </header>
 

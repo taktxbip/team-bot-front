@@ -12,10 +12,13 @@ import { useToast } from '@/hooks/ToastContext'
 import {
   createMatchSocket,
   mapMatchResult,
+  parseSettingsBroadcast,
   parseToastBroadcast,
+  SETTINGS_EVENT,
   TOAST_EVENT,
   type MatchResultBroadcast,
 } from '@/lib/match-ws-client'
+import { setServerSettings } from '@/stores/serverSettingsStore'
 import { getTeamWinnerKey } from '@/lib/utils'
 import type { Court, SessionStatus } from '@/types/court'
 
@@ -103,11 +106,18 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       pushToastRef.current(toast)
     }
 
+    const onSettings = (payload: unknown) => {
+      const next = parseSettingsBroadcast(payload)
+      if (!next) return
+      setServerSettings(next)
+    }
+
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('match_result', onMatchResult)
     socket.on(TOAST_EVENT, onToast)
+    socket.on(SETTINGS_EVENT, onSettings)
 
     if (!socket.connected) {
       socket.connect()
@@ -119,6 +129,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('connect_error', onConnectError)
       socket.off('match_result', onMatchResult)
       socket.off(TOAST_EVENT, onToast)
+      socket.off(SETTINGS_EVENT, onSettings)
       socket.disconnect()
       socketRef.current = null
     }

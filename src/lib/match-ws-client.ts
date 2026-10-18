@@ -50,6 +50,7 @@ export function createMatchSocket(serverUrl: string): Socket {
 }
 
 export const TOAST_EVENT = 'toast'
+export const SETTINGS_EVENT = 'settings'
 
 export type ToastStatus = 'ok' | 'error'
 
@@ -58,12 +59,19 @@ export type ToastBroadcast = {
   message: string
 }
 
+export type SettingsBroadcast = Record<string, unknown>
+
 export function parseToastBroadcast(payload: unknown): ToastBroadcast | null {
   if (!payload || typeof payload !== 'object') return null
   const value = payload as Record<string, unknown>
   if (value.status !== 'ok' && value.status !== 'error') return null
   if (typeof value.message !== 'string' || !value.message.trim()) return null
   return { status: value.status, message: value.message }
+}
+
+export function parseSettingsBroadcast(payload: unknown): SettingsBroadcast | null {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null
+  return { ...(payload as Record<string, unknown>) }
 }
 
 function mapWirePlayer(
