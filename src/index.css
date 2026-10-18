@@ -253,3 +253,42 @@
   }
 }
 
+@keyframes play-iridescent {
+  0%,
+  100% {
+    background-position: 30% 40%;
+    background-size: 160% 160%;
+    box-shadow:
+      0 12px 40px -8px rgba(249, 115, 22, 0.65),
+      0 0 0 0 rgba(251, 191, 36, 0.35);
+  }
+  50% {
+    background-position: 70% 60%;
+    background-size: 220% 220%;
+    box-shadow:
+      0 16px 48px -6px rgba(251, 146, 60, 0.75),
+      0 0 28px 4px rgba(244, 114, 182, 0.25);
+  }
+}
+
+@utility animate-play-iridescent {
+  background-image: radial-gradient(
+    circle at 40% 40%,
+    #fbbf24 0%,
+    #fb923c 22%,
+    #f97316 45%,
+    #ea580c 68%,
+    #f472b6 100%
+  );
+  background-size: 160% 160%;
+  animation: play-iridescent 6.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-play-iridescent {
+    animation: none;
+    background-image: radial-gradient(circle at 40% 40%, #fb923c, #ea580c);
+    background-size: 100% 100%;
+  }
+}
+

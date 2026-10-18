@@ -79,14 +79,26 @@ function playDayKey(value: string): string {
   return `${year}-${month}-${day}`
 }
 
-function buildPlayDaySeries(games: LastGame[], playerId: number | undefined): DayPoint[] {
+function playDayGames(games: LastGame[]): LastGame[] {
   if (!games.length) return []
-
   const newestDay = playDayKey(games[0]!.date)
-  const dayGames = games
-    .filter((game) => playDayKey(game.date) === newestDay)
+  return games.filter((game) => playDayKey(game.date) === newestDay)
+}
+
+function playerWonGame(game: LastGame, playerId: number | undefined): boolean {
+  if (playerId == null) return game.winnerTeam1
+  const onTeam1 = game.players.some((player) => player.playerId === playerId && player.team1)
+  const onTeam2 = game.players.some((player) => player.playerId === playerId && !player.team1)
+  if (onTeam1) return game.winnerTeam1
+  if (onTeam2) return !game.winnerTeam1
+  return game.winnerTeam1
+}
+
+function buildPlayDaySeries(games: LastGame[], playerId: number | undefined): DayPoint[] {
+  const dayGames = playDayGames(games)
     .slice()
     .sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
+  if (!dayGames.length) return []
 
   let total = 0
   const points: DayPoint[] = [{ time: 'Start', points: 0, change: 0 }]
@@ -100,6 +112,21 @@ function buildPlayDaySeries(games: LastGame[], playerId: number | undefined): Da
     })
   }
   return points
+}
+
+function buildPlayDayRecord(
+  games: LastGame[],
+  playerId: number | undefined,
+): { wins: number; played: number; pct: number } | null {
+  const dayGames = playDayGames(games)
+  if (!dayGames.length) return null
+  const wins = dayGames.filter((game) => playerWonGame(game, playerId)).length
+  const played = dayGames.length
+  return {
+    wins,
+    played,
+    pct: Math.round((wins / played) * 100),
+  }
 }
 
 function PlayerName({
@@ -189,15 +216,30 @@ function GameRow({
   )
 }
 
-function PlayDayPointsChart({ data, dayLabel }: { data: DayPoint[]; dayLabel: string }) {
+function PlayDayPointsChart({
+  data,
+  dayLabel,
+  dayRecord,
+}: {
+  data: DayPoint[]
+  dayLabel: string
+  dayRecord: { wins: number; played: number; pct: number } | null
+}) {
   if (!data.length) return null
 
   return (
     <div className="rounded-xl bg-card">
-      <div className="border-b px-5 py-3">
+      <div className="flex items-baseline justify-between gap-3 border-b px-5 py-3">
         <h3 className="text-sm font-medium text-muted-foreground">
           Point change {dayLabel}
         </h3>
+        {dayRecord && (
+          <p className="shrink-0 text-sm tabular-nums text-foreground">
+            Won{' '}
+            {dayRecord.wins}/{dayRecord.played}{' '}
+            <span className="text-muted-foreground">({dayRecord.pct}%)</span>
+          </p>
+        )}
       </div>
       <div className="h-52 w-full px-2 py-4 sm:px-4 [&_.recharts-surface]:outline-none [&_svg]:outline-none [&_*]:outline-none [&_*:focus]:outline-none [&_*:focus-visible]:outline-none">
         <ResponsiveContainer width="100%" height="100%">
@@ -277,6 +319,10 @@ export function LastTenGames({
 
   const playDaySeries = useMemo(
     () => buildPlayDaySeries(detailedGames, playerId),
+    [detailedGames, playerId],
+  )
+  const playDayRecord = useMemo(
+    () => buildPlayDayRecord(detailedGames, playerId),
     [detailedGames, playerId],
   )
   const playDayLabel = useMemo(() => {
@@ -390,7 +436,11 @@ export function LastTenGames({
 
           {!gamesLoading && !gamesError && detailedGames.length > 0 && (
             <>
-              <PlayDayPointsChart data={playDaySeries} dayLabel={playDayLabel} />
+              <PlayDayPointsChart
+                data={playDaySeries}
+                dayLabel={playDayLabel}
+                dayRecord={playDayRecord}
+              />
               <div className="overflow-hidden rounded-xl bg-card">
                 <ul>
                   {detailedGames.map((game) => (
