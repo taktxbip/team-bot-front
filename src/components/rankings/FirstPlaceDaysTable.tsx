@@ -12,10 +12,10 @@ export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysT
     <section className="flex flex-col gap-3">
       <header className="px-1">
         <h2 className="font-semibold tracking-tight text-foreground md:text-lg">
-          Days on first place
+          Days on first place*
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Playing days only. Days without matches are not counted. Starting from July, 2026.
+          Playing days only. Days without matches are not counted.
         </p>
       </header>
 
@@ -77,6 +77,8 @@ export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysT
           </table>
         )}
       </div>
+
+      <p className="px-1 text-xs text-muted-foreground">*Updates at 23:00 Thailand time. Starting from July, 2026.</p>
     </section>
   )
 }
