@@ -23,6 +23,14 @@ export type TeamWinRateEntry = {
   rate: number
 }
 
+/** Days a player finished first, from `/first-place-days` */
+export type FirstPlaceDaysEntry = {
+  playerId: number
+  name: string
+  flag: string
+  days: number
+}
+
 /** Raw `/player-stats` response */
 export type PlayerStatsApi = {
   rank: number

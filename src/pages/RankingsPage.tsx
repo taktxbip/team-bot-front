@@ -1,5 +1,7 @@
+import { FirstPlaceDaysTable } from '@/components/rankings/FirstPlaceDaysTable'
 import { RankingsTable } from '@/components/rankings/RankingsTable'
 import { TeamWinRateTable } from '@/components/rankings/TeamWinRateTable'
+import { useFirstPlaceDays } from '@/hooks/useFirstPlaceDays'
 import { useRankings } from '@/hooks/useRankings'
 import { useTeamWinRates } from '@/hooks/useTeamWinRates'
 
@@ -10,6 +12,11 @@ export function RankingsPage() {
     loading: teamWinRatesLoading,
     error: teamWinRatesError,
   } = useTeamWinRates()
+  const {
+    firstPlaceDays,
+    loading: firstPlaceDaysLoading,
+    error: firstPlaceDaysError,
+  } = useFirstPlaceDays()
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
@@ -42,6 +49,12 @@ export function RankingsPage() {
             <RankingsTable rankings={rankings} />
           </div>
         )}
+
+        <FirstPlaceDaysTable
+          entries={firstPlaceDays}
+          loading={firstPlaceDaysLoading}
+          error={firstPlaceDaysError}
+        />
 
         <TeamWinRateTable
           teamWinRates={teamWinRates}

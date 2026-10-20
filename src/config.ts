@@ -24,6 +24,8 @@ export const SAVE_WINNER_API_URL = `https://api.bbbplay.top/save-winner`
 export const START_API_URL = `https://api.bbbplay.top/start`
 // export const START_API_URL = `http://localhost:5555/start`
 
+export const FIRST_PLACE_DAYS_API_URL = 'https://api.bbbplay.top/first-place-days'
+
 /** Rankings REST API */
 export const RANKINGS_API_URL = 'https://api.bbbplay.top/rankings'
 // export const RANKINGS_API_URL = 'http://localhost:5555/rankings'
