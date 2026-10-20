@@ -15,7 +15,7 @@ export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysT
           Days on first place
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Playing days only. Days without matches are not counted.
+          Playing days only. Days without matches are not counted. Starting from July, 2026.
         </p>
       </header>
 
