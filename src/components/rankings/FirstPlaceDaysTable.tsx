@@ -70,14 +70,14 @@ export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysT
               return (
                 <li key={entry.playerId} className="flex shrink-0 items-end gap-2">
                   <Trophey className="w-auto" style={{ height: cupHeight }} />
-                  <div className="flex flex-col items-start leading-tight">
+                  <div className="flex flex-col items-start leading-[1.1]">
                     <span
                       className="font-bold tabular-nums"
                       style={{ fontSize: textSize }}
                     >
                       {entry.days}
                     </span>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       {entry.days === 1 ? 'day' : 'days'}
                     </span>
                     <Link
