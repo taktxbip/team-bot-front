@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Trophey } from '@/components/Trophey'
 import type { FirstPlaceDaysEntry } from '@/types/playerProfile'
@@ -24,9 +25,83 @@ function dayScale(days: number, minDays: number, maxDays: number): number {
   return (days - minDays) / (maxDays - minDays)
 }
 
+function scrollListTo(list: HTMLUListElement, left: number): () => void {
+  const max = Math.max(0, list.scrollWidth - list.clientWidth)
+  const target = Math.min(max, Math.max(0, left))
+  if (Math.abs(list.scrollLeft - target) <= 1) return () => {}
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    list.scrollLeft = target
+    return () => {}
+  }
+
+  const start = list.scrollLeft
+  const duration = 900
+  const started = performance.now()
+  let frame = 0
+
+  const step = (now: number) => {
+    const t = Math.min(1, (now - started) / duration)
+    const eased = 1 - (1 - t) ** 3
+    list.scrollLeft = start + (target - start) * eased
+    if (t < 1) frame = requestAnimationFrame(step)
+  }
+
+  frame = requestAnimationFrame(step)
+  return () => cancelAnimationFrame(frame)
+}
+
+function scrollOffset(target: EventTarget | null): number {
+  if (target instanceof HTMLElement) return target.scrollTop
+  return window.scrollY
+}
+
 export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysTableProps) {
+  const listRef = useRef<HTMLUListElement>(null)
   const minDays = entries.reduce((min, entry) => Math.min(min, entry.days), Infinity)
   const maxDays = entries.reduce((max, entry) => Math.max(max, entry.days), -Infinity)
+
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+
+    let visible = false
+    let lastOffset = window.scrollY
+    let direction = 0
+    let toward: 'left' | 'right' | null = null
+    let cancelScroll = () => {}
+
+    const play = (next: 'left' | 'right') => {
+      if (toward === next) return
+      toward = next
+      cancelScroll()
+      const end = list.scrollWidth - list.clientWidth
+      cancelScroll = scrollListTo(list, next === 'right' ? end : 0)
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = Boolean(entry?.isIntersecting)
+      if (visible && direction !== 0) play(direction > 0 ? 'right' : 'left')
+    }, { threshold: 0.6 })
+
+    const onScroll = (event: Event) => {
+      if (event.target === list) return
+      const offset = scrollOffset(event.target)
+      const delta = offset - lastOffset
+      lastOffset = offset
+      if (Math.abs(delta) < 2) return
+      direction = delta > 0 ? 1 : -1
+      if (visible) play(direction > 0 ? 'right' : 'left')
+    }
+
+    observer.observe(list)
+    window.addEventListener('scroll', onScroll, true)
+    return () => {
+      cancelScroll()
+      observer.disconnect()
+      window.removeEventListener('scroll', onScroll, true)
+    }
+  }, [entries])
 
   return (
     <section className="flex min-w-0 flex-col gap-3">
@@ -61,7 +136,10 @@ export function FirstPlaceDaysTable({ entries, loading, error }: FirstPlaceDaysT
         )}
 
         {!loading && !error && entries.length > 0 && (
-          <ul className="flex w-full min-w-0 items-end justify-start gap-4 overflow-x-auto px-4 py-5 sm:gap-8">
+          <ul
+            ref={listRef}
+            className="flex w-full min-w-0 items-end justify-start gap-4 overflow-x-auto px-4 py-5 [scrollbar-width:none] sm:gap-8 [&::-webkit-scrollbar]:hidden"
+          >
             {entries.map((entry) => {
               const scale = dayScale(entry.days, minDays, maxDays)
               const cupHeight = lerp(MIN_CUP_HEIGHT, MAX_CUP_HEIGHT, scale)
