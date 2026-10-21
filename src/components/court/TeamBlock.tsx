@@ -8,6 +8,7 @@ import {
   DEFAULT_NAME_FONT_SIZE,
   usePlayDisplaySettings,
 } from '@/hooks/PlayDisplaySettingsContext'
+import { Trophey } from '@/components/Trophey'
 import { Button } from '@/components/ui/button'
 import { Stamp } from '@/components/rankings/Stamp'
 import { PlayerRow } from './PlayerRow'
@@ -244,13 +245,10 @@ export function TeamBlock({
               alignRight ? 'left-3 md:left-8' : 'right-3 md:right-8',
             )}
           >
-            <span
-              className="leading-none select-none"
-              style={{ fontSize: `${Math.round(nameFontSize * 1.5)}px` }}
-              aria-hidden
-            >
-              🏆
-            </span>
+            <Trophey
+              className="w-auto"
+              style={{ height: Math.round(nameFontSize * 2.4) }}
+            />
             <span
               className={cn(
                 'text-base font-semibold tabular-nums leading-none md:text-xl',
