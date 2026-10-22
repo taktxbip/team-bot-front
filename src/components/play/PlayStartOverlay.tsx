@@ -9,7 +9,8 @@ type PlayStartOverlayProps = {
 
 /**
  * Fixed overlay over the courts area only (header stays clear).
- * Large orange Play button with an iridescent shimmer.
+ * Large solid Play button: black on a light theme, white on a dark theme,
+ * with a shine traveling around the border.
  */
 export function PlayStartOverlay({ show }: PlayStartOverlayProps) {
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -87,15 +88,19 @@ export function PlayStartOverlay({ show }: PlayStartOverlayProps) {
             type="button"
             disabled={starting}
             className={cn(
-              'animate-play-iridescent pointer-events-auto h-[min(35%,11rem)] w-[min(46%,21rem)]',
-              'rounded-2xl border border-white/25 text-3xl font-bold tracking-tight text-white sm:text-4xl',
-              'shadow-[0_12px_40px_-8px_rgba(249,115,22,0.65)] outline-none',
-              'focus-visible:ring-4 focus-visible:ring-orange-300/60',
-              'disabled:pointer-events-none',
+              'group/play pointer-events-auto relative h-[min(35%,11rem)] w-[min(46%,21rem)]',
+              'rounded-2xl bg-foreground text-center text-3xl font-light text-background uppercase sm:text-4xl',
+              'outline-none focus-visible:ring-4 focus-visible:ring-foreground/30',
+              'disabled:pointer-events-none hover:cursor-pointer',
             )}
             onClick={postStart}
           >
-            {starting ? 'Starting…' : 'Play'}
+            <span className="play-shine-mask" aria-hidden>
+              <span className="play-shine-glow" />
+            </span>
+            <span className="inline-block -mr-[6px] tracking-[6px] transition-[letter-spacing,margin-right] duration-300 group-hover/play:tracking-[8px] group-hover/play:-mr-[8px]">
+              {starting ? 'Loading…' : 'Play'}
+            </span>
           </button>
         </div>
       )}

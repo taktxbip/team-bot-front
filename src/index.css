@@ -253,42 +253,102 @@
   }
 }
 
-@keyframes play-iridescent {
-  0%,
-  100% {
-    background-position: 30% 40%;
-    background-size: 160% 160%;
-    box-shadow:
-      0 12px 40px -8px rgba(249, 115, 22, 0.65),
-      0 0 0 0 rgba(251, 191, 36, 0.35);
-  }
-  50% {
-    background-position: 70% 60%;
-    background-size: 220% 220%;
-    box-shadow:
-      0 16px 48px -6px rgba(251, 146, 60, 0.75),
-      0 0 28px 4px rgba(244, 114, 182, 0.25);
+@property --card-stripe-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes card-stripe-run {
+  to {
+    --card-stripe-angle: 360deg;
   }
 }
 
-@utility animate-play-iridescent {
-  background-image: radial-gradient(
-    circle at 40% 40%,
-    #fbbf24 0%,
-    #fb923c 22%,
-    #f97316 45%,
-    #ea580c 68%,
-    #f472b6 100%
+.card-running-border {
+  position: relative;
+}
+
+.card-running-border::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: inherit;
+  padding: 3px;
+  background: repeating-conic-gradient(
+    from var(--card-stripe-angle),
+    color-mix(in oklab, var(--foreground) 80%, transparent) 0 12deg,
+    transparent 12deg 24deg
   );
-  background-size: 160% 160%;
-  animation: play-iridescent 6.5s ease-in-out infinite;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: card-stripe-run 8s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-play-iridescent {
+  .card-running-border::before {
     animation: none;
-    background-image: radial-gradient(circle at 40% 40%, #fb923c, #ea580c);
-    background-size: 100% 100%;
+  }
+}
+
+/* Shine border: https://www.frontendhero.dev/tutorial/animated-shine-border-button/ */
+.play-shine-mask {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  padding: 2px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0) border-box;
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0) border-box;
+  mask-composite: exclude;
+}
+
+.play-shine-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40rem;
+  height: 40rem;
+  transform: translate(-50%, -50%);
+  transform-origin: 0 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    #60a5fa 8%,
+    #3b82f6 14%,
+    #f97316 20%,
+    #fb923c 26%,
+    transparent 32%
+  );
+  animation: play-shine-rotate 3s linear infinite;
+}
+
+@keyframes play-shine-rotate {
+  from {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+  to {
+    transform: rotate(360deg) translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-shine-glow {
+    animation: none;
   }
 }
 
