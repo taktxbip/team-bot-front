@@ -228,7 +228,7 @@ export function TeamBlock({
                 onConfirm()
               }}
             >
-              🏆 Confirm{' '}
+              🏆 Save{' '}
               {pointsChange !== undefined
                 ? pointsChange > 0
                   ? `+${pointsChange}`
@@ -247,7 +247,7 @@ export function TeamBlock({
           >
             <Trophey
               className="w-auto"
-              style={{ height: Math.round(nameFontSize * 2.4) }}
+              style={{ height: Math.round(nameFontSize * 2.6) }}
             />
             <span
               className={cn(
