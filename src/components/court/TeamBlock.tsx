@@ -65,7 +65,7 @@ export function TeamBlock({
   const stampOnLeft = side === 'team1'
   const { nameFontSize } = usePlayDisplaySettings()
   const stampScale = nameFontSize / DEFAULT_NAME_FONT_SIZE / 3
-  
+
   const BTN_MULTIPLIER = 0.8
   const confirmFontSize = Math.max(12, Math.round(nameFontSize * 0.85 * BTN_MULTIPLIER))
   const confirmPadX = Math.max(8, Math.round(nameFontSize * 0.45 * BTN_MULTIPLIER))
@@ -125,11 +125,11 @@ export function TeamBlock({
           onKeyDown={
             canSelect
               ? (event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    onSelect?.()
-                  }
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  onSelect?.()
                 }
+              }
               : undefined
           }
           className={cn(
@@ -195,15 +195,11 @@ export function TeamBlock({
             </div>
           )}
 
-          <div
-            className={cn(
-              'relative z-10 flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1',
-              alignRight ? 'pl-10 pr-2 md:pl-14 md:pr-4' : 'pr-10 pl-2 md:pr-14 md:pl-4',
-            )}
-          >
+          <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-1">
             <PlayerRow player={team.player1} align={alignRight ? 'right' : 'left'} />
             <PlayerRow player={team.player2} align={alignRight ? 'right' : 'left'} />
           </div>
+          
         </div>
 
         {isWinner && onConfirm && (

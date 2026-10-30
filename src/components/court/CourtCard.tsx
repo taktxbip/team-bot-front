@@ -49,10 +49,17 @@ export function CourtCard({
   const team2Key = getTeamWinnerKey(court.team2)
   const team1Stamp = court.team1.stamp
   const team2Stamp = court.team2.stamp
+  const courtNumber = court.name.match(/\d+/)?.[0] ?? court.name
 
   return (
-    <Card className="flex flex-col gap-0 md:h-full md:min-h-0">
-      <CardHeader className="shrink-0 px-5 pb-4 pt-4">
+    <Card className="@container relative flex flex-col gap-0 md:h-full md:min-h-0">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex items-center justify-center select-none text-[min(40rem,60cqmin)] font-black leading-none text-foreground/5"
+      >
+        {courtNumber}
+      </div>
+      <CardHeader className="relative shrink-0 px-5 pb-4 pt-4">
         <CardTitle className="text-2xl font-semibold">{court.name}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-5 px-5 pt-1 md:min-h-0 md:flex-1">
