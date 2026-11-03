@@ -299,6 +299,16 @@
   }
 }
 
+/* Caution-style tape for play-page matching loader. */
+.math-matching-tape {
+  background-color: var(--card);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklab, var(--foreground) 12%, transparent) 0 12px,
+    transparent 12px 24px
+  );
+}
+
 /* Accent border for suggested court ideas (team blue → orange). */
 .court-idea-accent {
   border: 2px solid transparent;

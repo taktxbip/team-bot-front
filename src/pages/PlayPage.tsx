@@ -1,4 +1,5 @@
 import { CourtsGrid } from '@/components/court/CourtsGrid'
+import { MathMatchingTape } from '@/components/play/MathMatchingTape'
 import { PlaySettings } from '@/components/play/PlaySettings'
 import { PlayStartOverlay } from '@/components/play/PlayStartOverlay'
 import { useMatchData } from '@/hooks/MatchDataContext'
@@ -10,6 +11,7 @@ export function PlayPage() {
     courts,
     courtIdeas,
     connected,
+    matching,
     error,
     pendingWinnerKey,
     pendingIdeaKey,
@@ -46,6 +48,7 @@ export function PlayPage() {
             onPlayIdea={playCourtIdea}
             onCancelIdea={cancelCourtIdea}
           />
+          <MathMatchingTape show={matching} />
           {!autoStartNext && !hasIdeasOnConfirmed && (
             <PlayStartOverlay show={allConfirmed} />
           )}

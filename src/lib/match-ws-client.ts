@@ -52,6 +52,8 @@ export function createMatchSocket(serverUrl: string): Socket {
 export const TOAST_EVENT = 'toast'
 export const SETTINGS_EVENT = 'settings'
 export const COURT_IDEAS_EVENT = 'court_ideas'
+export const LOADING_EVENT = 'loading'
+export const CANCEL_LOADING_EVENT = 'cancel_loading'
 
 export type ToastStatus = 'ok' | 'error'
 

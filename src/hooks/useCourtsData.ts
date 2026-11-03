@@ -12,8 +12,10 @@ import { dummyCourtsMessage } from '@/data/dummyCourts'
 import { readStoredPassword } from '@/hooks/PlayDisplaySettingsContext'
 import { useToast } from '@/hooks/ToastContext'
 import {
+  CANCEL_LOADING_EVENT,
   COURT_IDEAS_EVENT,
   createMatchSocket,
+  LOADING_EVENT,
   mapCourtIdeas,
   mapMatchResult,
   parseSettingsBroadcast,
@@ -31,6 +33,7 @@ type UseCourtsDataResult = {
   courtIdeas: Court[]
   status: SessionStatus
   connected: boolean
+  matching: boolean
   error: string | null
   pendingWinnerKey: string | null
   pendingIdeaKey: string | null
@@ -45,6 +48,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [courtIdeas, setCourtIdeas] = useState<Court[]>([])
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
   const [connected, setConnected] = useState(false)
+  const [matching, setMatching] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const [pendingIdeaKey, setPendingIdeaKey] = useState<string | null>(null)
@@ -65,6 +69,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
 
     const onDisconnect = () => {
       setConnected(false)
+      setMatching(false)
     }
 
     const onConnectError = (err: Error) => {
@@ -131,11 +136,21 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       setServerSettings(next)
     }
 
+    const onLoading = () => {
+      setMatching(true)
+    }
+
+    const onCancelLoading = () => {
+      setMatching(false)
+    }
+
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('match_result', onMatchResult)
     socket.on(COURT_IDEAS_EVENT, onCourtIdeas)
+    socket.on(LOADING_EVENT, onLoading)
+    socket.on(CANCEL_LOADING_EVENT, onCancelLoading)
     socket.on(TOAST_EVENT, onToast)
     socket.on(SETTINGS_EVENT, onSettings)
 
@@ -149,6 +164,8 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('connect_error', onConnectError)
       socket.off('match_result', onMatchResult)
       socket.off(COURT_IDEAS_EVENT, onCourtIdeas)
+      socket.off(LOADING_EVENT, onLoading)
+      socket.off(CANCEL_LOADING_EVENT, onCancelLoading)
       socket.off(TOAST_EVENT, onToast)
       socket.off(SETTINGS_EVENT, onSettings)
       socket.disconnect()
@@ -276,6 +293,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     courtIdeas,
     status,
     connected,
+    matching,
     error,
     pendingWinnerKey,
     pendingIdeaKey,
