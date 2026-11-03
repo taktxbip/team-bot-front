@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import {
+  CANCEL_COURT_IDEA_API_URL,
   MATCH_WS_URL,
+  PLAY_COURT_IDEA_API_URL,
   SAVE_WINNER_API_URL,
   SET_WINNER_API_URL,
   START_API_URL,
@@ -10,7 +12,9 @@ import { dummyCourtsMessage } from '@/data/dummyCourts'
 import { readStoredPassword } from '@/hooks/PlayDisplaySettingsContext'
 import { useToast } from '@/hooks/ToastContext'
 import {
+  COURT_IDEAS_EVENT,
   createMatchSocket,
+  mapCourtIdeas,
   mapMatchResult,
   parseSettingsBroadcast,
   parseToastBroadcast,
@@ -24,20 +28,26 @@ import type { Court, SessionStatus } from '@/types/court'
 
 type UseCourtsDataResult = {
   courts: Court[]
+  courtIdeas: Court[]
   status: SessionStatus
   connected: boolean
   error: string | null
   pendingWinnerKey: string | null
+  pendingIdeaKey: string | null
   selectWinner: (winnerKey: string) => void
   saveWinner: (courtId: string) => void
+  playCourtIdea: (ideaCourtId: string) => void
+  cancelCourtIdea: (ideaCourtId: string) => void
 }
 
 export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [courts, setCourts] = useState<Court[]>(dummyCourtsMessage.courts)
+  const [courtIdeas, setCourtIdeas] = useState<Court[]>([])
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
+  const [pendingIdeaKey, setPendingIdeaKey] = useState<string | null>(null)
   const socketRef = useRef<Socket | null>(null)
   const startSentRef = useRef(false)
   const { pushToast } = useToast()
@@ -100,6 +110,15 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       }
     }
 
+    const onCourtIdeas = (payload: unknown) => {
+      try {
+        setCourtIdeas(mapCourtIdeas(payload))
+        setPendingIdeaKey(null)
+      } catch {
+        setCourtIdeas([])
+      }
+    }
+
     const onToast = (payload: unknown) => {
       const toast = parseToastBroadcast(payload)
       if (!toast) return
@@ -116,6 +135,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
     socket.on('match_result', onMatchResult)
+    socket.on(COURT_IDEAS_EVENT, onCourtIdeas)
     socket.on(TOAST_EVENT, onToast)
     socket.on(SETTINGS_EVENT, onSettings)
 
@@ -128,6 +148,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectError)
       socket.off('match_result', onMatchResult)
+      socket.off(COURT_IDEAS_EVENT, onCourtIdeas)
       socket.off(TOAST_EVENT, onToast)
       socket.off(SETTINGS_EVENT, onSettings)
       socket.disconnect()
@@ -204,13 +225,63 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     [courts, pendingWinnerKey],
   )
 
+  const postIdeaAction = useCallback(
+    (url: string, ideaCourtId: string, failMessage: string) => {
+      if (pendingIdeaKey) return
+
+      setPendingIdeaKey(ideaCourtId)
+
+      void (async () => {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: readStoredPassword(),
+              courtId: ideaCourtId,
+            }),
+          })
+
+          if (response.status !== 200) {
+            throw new Error(`${failMessage} (${response.status})`)
+          }
+        } catch (err) {
+          pushToastRef.current({
+            status: 'error',
+            message: err instanceof Error ? err.message : failMessage,
+          })
+          setPendingIdeaKey(null)
+        }
+      })()
+    },
+    [pendingIdeaKey],
+  )
+
+  const playCourtIdea = useCallback(
+    (ideaCourtId: string) => {
+      postIdeaAction(PLAY_COURT_IDEA_API_URL, ideaCourtId, 'Failed to play court idea')
+    },
+    [postIdeaAction],
+  )
+
+  const cancelCourtIdea = useCallback(
+    (ideaCourtId: string) => {
+      postIdeaAction(CANCEL_COURT_IDEA_API_URL, ideaCourtId, 'Failed to cancel court idea')
+    },
+    [postIdeaAction],
+  )
+
   return {
     courts,
+    courtIdeas,
     status,
     connected,
     error,
     pendingWinnerKey,
+    pendingIdeaKey,
     selectWinner,
     saveWinner,
+    playCourtIdea,
+    cancelCourtIdea,
   }
 }

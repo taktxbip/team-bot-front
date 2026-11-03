@@ -55,7 +55,7 @@ export function CourtCard({
     <Card className="@container relative flex flex-col gap-0 md:h-full md:min-h-0">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center select-none text-[min(40rem,60cqmin)] font-black leading-none text-foreground/5"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center select-none text-[min(40rem,60cqmin)] font-black leading-none text-foreground/10"
       >
         {courtNumber}
       </div>

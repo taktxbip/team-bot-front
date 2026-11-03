@@ -1,5 +1,5 @@
 import { io, type Socket } from 'socket.io-client'
-import type { CourtsMessage, SessionStatus, TeamStamp } from '@/types/court'
+import type { Court, CourtsMessage, SessionStatus, TeamStamp } from '@/types/court'
 
 export type WirePlayer = {
   id?: string
@@ -51,6 +51,7 @@ export function createMatchSocket(serverUrl: string): Socket {
 
 export const TOAST_EVENT = 'toast'
 export const SETTINGS_EVENT = 'settings'
+export const COURT_IDEAS_EVENT = 'court_ideas'
 
 export type ToastStatus = 'ok' | 'error'
 
@@ -108,8 +109,8 @@ function mapWireTeam(team: WireTeam, side: 'team1' | 'team2') {
   }
 }
 
-export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
-  const courts = payload.courts.map((court) => ({
+function mapWireCourts(wireCourts: WireCourt[]) {
+  return wireCourts.map((court) => ({
     id: court.id,
     name: court.name.startsWith('Court') ? court.name : `Court ${court.name}`,
     winner: court.winner,
@@ -118,10 +119,22 @@ export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
     team1: mapWireTeam(court.team1, 'team1'),
     team2: mapWireTeam(court.team2, 'team2'),
   }))
+}
+
+export function mapMatchResult(payload: MatchResultBroadcast): CourtsMessage {
+  const courts = mapWireCourts(payload.courts)
   const allConfirmed = courts.length > 0 && courts.every((court) => court.confirmed)
 
   return {
     status: payload.status ?? (allConfirmed ? 'finished' : 'live'),
     courts,
   }
+}
+
+/** Same wire shape as match_result; ideas never carry winners. */
+export function mapCourtIdeas(payload: unknown): Court[] {
+  if (!payload || typeof payload !== 'object') return []
+  const courts = (payload as MatchResultBroadcast).courts
+  if (!Array.isArray(courts)) return []
+  return mapWireCourts(courts)
 }

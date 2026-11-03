@@ -3,9 +3,11 @@ import type { Court } from '@/types/court'
 import type { ConfettiSize } from '@/lib/teamConfetti'
 import { cn } from '@/lib/utils'
 import { CourtCard } from './CourtCard'
+import { CourtIdeaOverlay } from './CourtIdeaOverlay'
 
 type CourtCardEnterProps = {
   court: Court
+  idea?: Court | null
   confettiSize?: ConfettiSize
   staggerIndex: number
   team1StampIndex?: number | null
@@ -17,10 +19,14 @@ type CourtCardEnterProps = {
   onConfirmCourt?: (courtId: string) => void
   canSelectWinner?: boolean
   pendingWinnerKey?: string | null
+  pendingIdeaKey?: string | null
+  onPlayIdea?: (ideaCourtId: string) => void
+  onCancelIdea?: (ideaCourtId: string) => void
 }
 
 export function CourtCardEnter({
   court,
+  idea = null,
   confettiSize,
   staggerIndex,
   team1StampIndex = null,
@@ -32,8 +38,12 @@ export function CourtCardEnter({
   onConfirmCourt,
   canSelectWinner,
   pendingWinnerKey,
+  pendingIdeaKey,
+  onPlayIdea,
+  onCancelIdea,
 }: CourtCardEnterProps) {
   const [animate, setAnimate] = useState(false)
+  const showIdea = Boolean(idea && court.confirmed)
 
   useLayoutEffect(() => {
     const frame = requestAnimationFrame(() => setAnimate(true))
@@ -43,7 +53,7 @@ export function CourtCardEnter({
   return (
     <div
       className={cn(
-        'min-h-0 md:h-full',
+        'relative min-h-0 md:h-full',
         animate &&
           'animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both motion-reduce:animate-none',
       )}
@@ -64,6 +74,15 @@ export function CourtCardEnter({
         stampStaggerMs={stampStaggerMs}
         onStampImpact={onStampImpact}
       />
+      {showIdea && idea ? (
+        <CourtIdeaOverlay
+          idea={idea}
+          courtName={court.name}
+          pending={pendingIdeaKey === idea.id}
+          onPlay={() => onPlayIdea?.(idea.id)}
+          onCancel={() => onCancelIdea?.(idea.id)}
+        />
+      ) : null}
     </div>
   )
 }

@@ -8,16 +8,21 @@ import { useServerSettings } from '@/stores/serverSettingsStore'
 export function PlayPage() {
   const {
     courts,
+    courtIdeas,
     connected,
     error,
     pendingWinnerKey,
+    pendingIdeaKey,
     selectWinner,
     saveWinner,
+    playCourtIdea,
+    cancelCourtIdea,
   } = useMatchData()
 
   const { autoStartNext } = useServerSettings()
 
   const allConfirmed = courts.length > 0 && courts.every((court) => court.confirmed)
+  const hasIdeasOnConfirmed = courtIdeas.length > 0 && courts.some((court) => court.confirmed)
 
   return (
     <PlayDisplaySettingsProvider>
@@ -32,12 +37,16 @@ export function PlayPage() {
           <PlaySettings />
           <CourtsGrid
             courts={courts}
+            courtIdeas={courtIdeas}
             onSelectWinner={selectWinner}
             onConfirmCourt={saveWinner}
             canSelectWinner={connected}
             pendingWinnerKey={pendingWinnerKey}
+            pendingIdeaKey={pendingIdeaKey}
+            onPlayIdea={playCourtIdea}
+            onCancelIdea={cancelCourtIdea}
           />
-          {!autoStartNext && (
+          {!autoStartNext && !hasIdeasOnConfirmed && (
             <PlayStartOverlay show={allConfirmed} />
           )}
         </main>

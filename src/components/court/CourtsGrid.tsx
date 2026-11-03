@@ -8,10 +8,25 @@ import { CourtCardEnter } from './CourtCardEnter'
 
 type CourtsGridProps = {
   courts: Court[]
+  courtIdeas?: Court[]
   onSelectWinner?: (winnerKey: string) => void
   onConfirmCourt?: (courtId: string) => void
   canSelectWinner?: boolean
   pendingWinnerKey?: string | null
+  pendingIdeaKey?: string | null
+  onPlayIdea?: (ideaCourtId: string) => void
+  onCancelIdea?: (ideaCourtId: string) => void
+}
+
+/** Pair each idea onto a confirmed court, in display order. */
+function ideasByConfirmedCourtId(courts: Court[], ideas: Court[]) {
+  const confirmedIds = courts.filter((court) => court.confirmed).map((court) => court.id)
+  const map = new Map<string, Court>()
+  ideas.forEach((idea, index) => {
+    const courtId = confirmedIds[index]
+    if (courtId) map.set(courtId, idea)
+  })
+  return map
 }
 
 function getGridClass(count: number): string {
@@ -38,14 +53,22 @@ function buildStampIndices(courts: Court[]) {
 
 export function CourtsGrid({
   courts,
+  courtIdeas = [],
   onSelectWinner,
   onConfirmCourt,
   canSelectWinner,
   pendingWinnerKey,
+  pendingIdeaKey,
+  onPlayIdea,
+  onCancelIdea,
 }: CourtsGridProps) {
   const [quake, setQuake] = useState(false)
   const impactAudioRef = useRef<HTMLAudioElement | null>(null)
   const stampIndices = useMemo(() => buildStampIndices(courts), [courts])
+  const ideaByCourtId = useMemo(
+    () => ideasByConfirmedCourtId(courts, courtIdeas),
+    [courts, courtIdeas],
+  )
 
   useEffect(() => {
     const audio = createSound(impactSrc)
@@ -99,6 +122,7 @@ export function CourtsGrid({
         <CourtCardEnter
           key={court.id}
           court={court}
+          idea={ideaByCourtId.get(court.id) ?? null}
           confettiSize={confettiSize}
           staggerIndex={index}
           team1StampIndex={stampIndices[index]?.team1StampIndex ?? null}
@@ -110,6 +134,9 @@ export function CourtsGrid({
           onConfirmCourt={onConfirmCourt}
           canSelectWinner={canSelectWinner && !court.confirmed}
           pendingWinnerKey={pendingWinnerKey}
+          pendingIdeaKey={pendingIdeaKey}
+          onPlayIdea={onPlayIdea}
+          onCancelIdea={onCancelIdea}
         />
       ))}
     </div>
