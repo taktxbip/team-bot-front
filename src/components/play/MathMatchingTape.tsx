@@ -81,7 +81,7 @@ export function MathMatchingTape({ show }: MathMatchingTapeProps) {
     setPhrase(pickPhrase())
     const id = window.setInterval(() => {
       setPhrase((current) => pickPhrase(current))
-    }, 4000)
+    }, 5_000)
 
     return () => window.clearInterval(id)
   }, [show])

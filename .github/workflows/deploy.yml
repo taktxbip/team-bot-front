@@ -27,6 +27,7 @@ jobs:
       - run: npm run build
         env:
           NODE_ENV: production
+          VITE_BUILD_NUMBER: ${{ github.run_number }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

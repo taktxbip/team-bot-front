@@ -5,6 +5,8 @@ import { useFirstPlaceDays } from '@/hooks/useFirstPlaceDays'
 import { useRankings } from '@/hooks/useRankings'
 import { useTeamWinRates } from '@/hooks/useTeamWinRates'
 
+const buildNumber = import.meta.env.VITE_BUILD_NUMBER || 'dev'
+
 export function RankingsPage() {
   const { rankings, loading, error } = useRankings()
   const {
@@ -19,7 +21,7 @@ export function RankingsPage() {
   } = useFirstPlaceDays()
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
       <main className="mx-auto flex w-full max-w-[500px] flex-col gap-10 pb-10">
         {loading && (
           <div className="flex min-h-48 items-center justify-center text-muted-foreground">
@@ -62,6 +64,9 @@ export function RankingsPage() {
           error={teamWinRatesError}
         />
       </main>
+      <p className="pointer-events-none fixed bottom-3 left-3 z-10 text-xs text-muted-foreground/70">
+        build {buildNumber}
+      </p>
     </div>
   )
 }
