@@ -194,7 +194,7 @@ function GameRow({
           )}
           {opponentTeam.map((player, index) => (
             <span key={player.id} className="inline-flex items-baseline gap-1.5">
-              {index > 0 && <span className="text-muted-foreground">+</span>}
+              {index > 0 && <span className="text-muted-foreground">-</span>}
               <PlayerName playerId={player.playerId} namesById={namesById} />
             </span>
           ))}
