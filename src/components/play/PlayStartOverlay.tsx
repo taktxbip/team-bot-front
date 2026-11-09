@@ -74,7 +74,7 @@ export function PlayStartOverlay({ show }: PlayStartOverlayProps) {
   return (
     <>
       <div ref={anchorRef} className="pointer-events-none absolute inset-0" aria-hidden />
-      {show && bounds.height > 0 && (
+      {show && !starting && bounds.height > 0 && (
         <div
           className="fixed z-50 flex items-center justify-center bg-background/55 backdrop-blur-[2px]"
           style={{
@@ -86,12 +86,11 @@ export function PlayStartOverlay({ show }: PlayStartOverlayProps) {
         >
           <button
             type="button"
-            disabled={starting}
             className={cn(
               'group/play pointer-events-auto relative h-[min(35%,11rem)] w-[min(46%,21rem)]',
               'rounded-2xl bg-foreground text-center text-3xl font-light text-background uppercase sm:text-4xl',
               'outline-none focus-visible:ring-4 focus-visible:ring-foreground/30',
-              'disabled:pointer-events-none hover:cursor-pointer',
+              'hover:cursor-pointer',
             )}
             onClick={postStart}
           >
@@ -99,7 +98,7 @@ export function PlayStartOverlay({ show }: PlayStartOverlayProps) {
               <span className="play-shine-glow" />
             </span>
             <span className="inline-block -mr-[6px] tracking-[6px] transition-[letter-spacing,margin-right] duration-300 group-hover/play:tracking-[8px] group-hover/play:-mr-[8px]">
-              {starting ? 'Loading…' : 'Play'}
+              Play
             </span>
           </button>
         </div>
