@@ -8,7 +8,7 @@ import { useTeamWinRates } from '@/hooks/useTeamWinRates'
 const buildNumber = import.meta.env.VITE_BUILD_NUMBER || 'dev'
 
 /** Flip to true to restore rankings content. */
-const RANKINGS_AVAILABLE = false
+const RANKINGS_AVAILABLE = true;
 
 function BuildBadge() {
   return (
