@@ -7,7 +7,34 @@ import { useTeamWinRates } from '@/hooks/useTeamWinRates'
 
 const buildNumber = import.meta.env.VITE_BUILD_NUMBER || 'dev'
 
-export function RankingsPage() {
+/** Flip to true to restore rankings content. */
+const RANKINGS_AVAILABLE = false
+
+function BuildBadge() {
+  return (
+    <p className="pointer-events-none fixed bottom-3 left-3 z-10 text-xs text-muted-foreground/70">
+      build {buildNumber}
+    </p>
+  )
+}
+
+function RankingsUnavailable() {
+  return (
+    <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <main className="mx-auto flex w-full max-w-[500px] flex-1 flex-col items-center justify-center gap-2 px-6 pb-10 text-center">
+        <h1 className="text-lg font-semibold tracking-tight text-foreground">
+          Rankings unavailable
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          The rankings page is temporarily not available. Please check back later.
+        </p>
+      </main>
+      <BuildBadge />
+    </div>
+  )
+}
+
+function RankingsContent() {
   const { rankings, loading, error } = useRankings()
   const {
     teamWinRates,
@@ -64,9 +91,12 @@ export function RankingsPage() {
           error={teamWinRatesError}
         />
       </main>
-      <p className="pointer-events-none fixed bottom-3 left-3 z-10 text-xs text-muted-foreground/70">
-        build {buildNumber}
-      </p>
+      <BuildBadge />
     </div>
   )
+}
+
+export function RankingsPage() {
+  if (!RANKINGS_AVAILABLE) return <RankingsUnavailable />
+  return <RankingsContent />
 }
