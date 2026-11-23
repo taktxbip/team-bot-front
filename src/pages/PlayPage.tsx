@@ -1,4 +1,5 @@
 import { CourtsGrid } from '@/components/court/CourtsGrid'
+import { AchievementOverlay } from '@/components/play/AchievementOverlay'
 import { MathMatchingTape } from '@/components/play/MathMatchingTape'
 import { PlaySettings } from '@/components/play/PlaySettings'
 import { PlayStartOverlay } from '@/components/play/PlayStartOverlay'
@@ -12,6 +13,7 @@ export function PlayPage() {
     courtIdeas,
     connected,
     matching,
+    achievement,
     error,
     pendingWinnerKey,
     pendingIdeaKey,
@@ -19,6 +21,7 @@ export function PlayPage() {
     saveWinner,
     playCourtIdea,
     cancelCourtIdea,
+    clearAchievement,
   } = useMatchData()
 
   const { autoStartNext } = useServerSettings()
@@ -52,6 +55,10 @@ export function PlayPage() {
           {!autoStartNext && !hasIdeasOnConfirmed && (
             <PlayStartOverlay show={allConfirmed} />
           )}
+          <AchievementOverlay
+            achievement={achievement}
+            onDismiss={clearAchievement}
+          />
         </main>
       </div>
     </PlayDisplaySettingsProvider>

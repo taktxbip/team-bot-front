@@ -54,6 +54,29 @@ export const SETTINGS_EVENT = 'settings'
 export const COURT_IDEAS_EVENT = 'court_ideas'
 export const LOADING_EVENT = 'loading'
 export const CANCEL_LOADING_EVENT = 'cancel_loading'
+export const PLAYED_MILESTONE_EVENT = 'played_milestone'
+
+export type PlayedMilestoneBroadcast = {
+  message: string
+  level: number
+  played: number
+  playerId: number
+}
+
+export function parsePlayedMilestone(payload: unknown): PlayedMilestoneBroadcast | null {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null
+  const value = payload as Record<string, unknown>
+  if (typeof value.message !== 'string' || !value.message.trim()) return null
+  if (typeof value.level !== 'number' || !Number.isFinite(value.level)) return null
+  if (typeof value.played !== 'number' || !Number.isFinite(value.played)) return null
+  if (typeof value.playerId !== 'number' || !Number.isFinite(value.playerId)) return null
+  return {
+    message: value.message.trim(),
+    level: value.level,
+    played: value.played,
+    playerId: value.playerId,
+  }
+}
 
 export type ToastStatus = 'ok' | 'error'
 

@@ -95,3 +95,36 @@ export function fireTeamConfetti(
   void fire({ ...preset.burst, ...shared })
   void fire({ ...preset.burst2, ...shared })
 }
+
+/** Fullscreen celebration for achievement overlays. */
+export function fireAchievementConfetti(accent: string) {
+  const colors = [accent, '#ffffff', '#fde68a', '#fbbf24']
+  const shared = { colors, disableForReducedMotion: true } as const
+
+  void confetti({
+    ...shared,
+    particleCount: 120,
+    spread: 100,
+    startVelocity: 45,
+    origin: { x: 0.5, y: 0.55 },
+    ticks: 280,
+  })
+  void confetti({
+    ...shared,
+    particleCount: 80,
+    angle: 60,
+    spread: 70,
+    startVelocity: 55,
+    origin: { x: 0, y: 0.7 },
+    ticks: 300,
+  })
+  void confetti({
+    ...shared,
+    particleCount: 80,
+    angle: 120,
+    spread: 70,
+    startVelocity: 55,
+    origin: { x: 1, y: 0.7 },
+    ticks: 300,
+  })
+}

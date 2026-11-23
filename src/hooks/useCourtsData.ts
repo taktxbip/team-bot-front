@@ -12,14 +12,20 @@ import { dummyCourtsMessage } from '@/data/dummyCourts'
 import { readStoredPassword } from '@/hooks/PlayDisplaySettingsContext'
 import { useToast } from '@/hooks/ToastContext'
 import {
+  toAchievementLevel,
+  type AchievementConfig,
+} from '@/components/play/achievementLevels'
+import {
   CANCEL_LOADING_EVENT,
   COURT_IDEAS_EVENT,
   createMatchSocket,
   LOADING_EVENT,
   mapCourtIdeas,
   mapMatchResult,
+  parsePlayedMilestone,
   parseSettingsBroadcast,
   parseToastBroadcast,
+  PLAYED_MILESTONE_EVENT,
   SETTINGS_EVENT,
   TOAST_EVENT,
   type MatchResultBroadcast,
@@ -34,6 +40,7 @@ type UseCourtsDataResult = {
   status: SessionStatus
   connected: boolean
   matching: boolean
+  achievement: AchievementConfig | null
   error: string | null
   pendingWinnerKey: string | null
   pendingIdeaKey: string | null
@@ -41,6 +48,7 @@ type UseCourtsDataResult = {
   saveWinner: (courtId: string) => void
   playCourtIdea: (ideaCourtId: string) => void
   cancelCourtIdea: (ideaCourtId: string) => void
+  clearAchievement: () => void
 }
 
 export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
@@ -49,6 +57,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
   const [status, setStatus] = useState<SessionStatus>(dummyCourtsMessage.status)
   const [connected, setConnected] = useState(false)
   const [matching, setMatching] = useState(false)
+  const [achievement, setAchievement] = useState<AchievementConfig | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [pendingWinnerKey, setPendingWinnerKey] = useState<string | null>(null)
   const [pendingIdeaKey, setPendingIdeaKey] = useState<string | null>(null)
@@ -144,6 +153,17 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       setMatching(false)
     }
 
+    const onPlayedMilestone = (payload: unknown) => {
+      const milestone = parsePlayedMilestone(payload)
+      if (!milestone) return
+      setAchievement({
+        level: toAchievementLevel(milestone.level),
+        text: milestone.message,
+        played: milestone.played,
+        playerId: milestone.playerId,
+      })
+    }
+
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectError)
@@ -151,6 +171,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     socket.on(COURT_IDEAS_EVENT, onCourtIdeas)
     socket.on(LOADING_EVENT, onLoading)
     socket.on(CANCEL_LOADING_EVENT, onCancelLoading)
+    socket.on(PLAYED_MILESTONE_EVENT, onPlayedMilestone)
     socket.on(TOAST_EVENT, onToast)
     socket.on(SETTINGS_EVENT, onSettings)
 
@@ -166,6 +187,7 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
       socket.off(COURT_IDEAS_EVENT, onCourtIdeas)
       socket.off(LOADING_EVENT, onLoading)
       socket.off(CANCEL_LOADING_EVENT, onCancelLoading)
+      socket.off(PLAYED_MILESTONE_EVENT, onPlayedMilestone)
       socket.off(TOAST_EVENT, onToast)
       socket.off(SETTINGS_EVENT, onSettings)
       socket.disconnect()
@@ -288,12 +310,17 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     [postIdeaAction],
   )
 
+  const clearAchievement = useCallback(() => {
+    setAchievement(null)
+  }, [])
+
   return {
     courts,
     courtIdeas,
     status,
     connected,
     matching,
+    achievement,
     error,
     pendingWinnerKey,
     pendingIdeaKey,
@@ -301,5 +328,6 @@ export function useCourtsData(serverUrl = MATCH_WS_URL): UseCourtsDataResult {
     saveWinner,
     playCourtIdea,
     cancelCourtIdea,
+    clearAchievement,
   }
 }
